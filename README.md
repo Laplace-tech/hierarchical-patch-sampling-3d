@@ -1,12 +1,10 @@
-# Hierarchical Patch Sampling for 3D CT
+# Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation
 
-**Adaptive patch sampling through hierarchical conditional probabilities.**
+*3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
-[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Conference](#conference) · [Study notebooks](#study-notebooks)
+[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Conference](#conference)
 
-Yongmin Park (박용민) · Computer Science, Kyonggi University · [Laplace-tech](https://github.com/Laplace-tech)
-
-This sole-author study investigates patch selection for **3D abdominal CT
+This study investigates patch selection for **3D abdominal CT
 multi-organ segmentation**. Organ-wise learning states and error types guide
 sampling while the nnU-Net architecture stays unchanged.
 
@@ -262,72 +260,8 @@ Candidate snapshots may combine observations from different refresh times.
 
 </details>
 
-## Study notebooks
-
-The study archive follows the data flow of a segmentation system, from Tensor
-contracts to physical-space evaluation and nnU-Net's training pipeline.
-
-| Part | Focus | Notebooks |
-| :--- | :--- | ---: |
-| [1 · Segmentation fundamentals](studies/prerequisites/part01_segmentation_fundamentals) | Tensor contracts, softmax, cross-entropy, Dice / IoU | 3 |
-| [2 · U-Net from scratch](studies/prerequisites/part02_unet_from_scratch) | Convolution, skip connections, tiny overfit | 3 |
-| [3 · Volumetric learning](studies/prerequisites/part03_volumetric_learning) | Conv3D memory, patch sampling, sliding-window inference | 3 |
-| [4 · Medical-image geometry](studies/prerequisites/part04_medical_image_geometry_ct) | NIfTI, affine, orientation, resampling, CT windowing | 4 |
-| [5 · Losses & evaluation](studies/prerequisites/part05_losses_physical_space_evaluation) | Soft Dice, surface metrics, empty masks, case aggregation | 3 |
-| [6 · nnU-Net literacy](studies/prerequisites/part06_nnunet_v2_literacy) | Fingerprints, planning, oversampling, deep supervision | 3 |
-| [7 · Research hygiene](studies/prerequisites/part07_research_hygiene_statistics) | Splits, leakage, reproducibility | 1 |
-
-<details>
-<summary>Full notebook index · 20 lessons</summary>
-
-| Part / Lesson | Notebook | Cells | 난도 | 복습의 핵심 |
-| --- | --- | ---: | --- | --- |
-| 1.1 | [Tensor Contract](studies/prerequisites/part01_segmentation_fundamentals/01_tensor_contracts.ipynb) | 5 | ██░░░ | input·logits·target·prediction Shape |
-| 1.2 | [Softmax & Cross-Entropy](studies/prerequisites/part01_segmentation_fundamentals/02_softmax_cross_entropy.ipynb) | 5 | ███░░ | 수치 안정성과 voxel-wise loss |
-| 1.3 | [Dice & IoU](studies/prerequisites/part01_segmentation_fundamentals/03_dice_iou.ipynb) | 5 | ███░░ | TP/FP/FN·overlap·empty masks |
-| 2.1 | [Convolution & Receptive Field](studies/prerequisites/part02_unet_from_scratch/01_convolution_shapes.ipynb) | 6 | ███░░ | convolution Shape·receptive field 계산 |
-| 2.2 | [Encoder–Decoder & Skip](studies/prerequisites/part02_unet_from_scratch/02_encoder_decoder_skip.ipynb) | 5 | ███░░ | down/up sampling·feature 결합 |
-| 2.3 | [Minimal U-Net & Tiny Overfit](studies/prerequisites/part02_unet_from_scratch/03_minimal_2d_unet_tiny_overfit.ipynb) | 6 | ████░ | 작은 synthetic data의 end-to-end 학습 |
-| 3.1 | [Conv3D & Memory](studies/prerequisites/part03_volumetric_learning/01_conv3d_tensor_flow_memory.ipynb) | 6 | ███░░ | 3D activation·학습 peak memory |
-| 3.2 | [Crop, Padding & Sampling](studies/prerequisites/part03_volumetric_learning/02_crop_padding_patch_sampling.ipynb) | 6 | ███░░ | patch 경계·uniform/foreground center |
-| 3.3 | [Sliding-Window Inference](studies/prerequisites/part03_volumetric_learning/03_sliding_window_inference.ipynb) | 5 | ████░ | overlap accumulation·normalization |
-| 4.1 | [NIfTI Array & Affine](studies/prerequisites/part04_medical_image_geometry_ct/01_nifti_array_affine.ipynb) | 5 | ███░░ | voxel index에서 physical coordinate로 변환 |
-| 4.2 | [Orientation & Three-Plane Viewing](studies/prerequisites/part04_medical_image_geometry_ct/02_orientation_three_plane_viewing.ipynb) | 5 | ███░░ | array 축·방향·canonical RAS |
-| 4.3 | [Spacing-Aware Resampling](studies/prerequisites/part04_medical_image_geometry_ct/03_spacing_aware_resampling.ipynb) | 5 | ██░░░ | Shape·spacing·image/label interpolation |
-| 4.4 | [CT HU, Windowing & Anatomy](studies/prerequisites/part04_medical_image_geometry_ct/04_ct_hu_windowing_abdominal_anatomy.ipynb) | 6 | ███░░ | intensity·laterality·partial FOV |
-| 5.1 | [Cross-Entropy + Soft Dice](studies/prerequisites/part05_losses_physical_space_evaluation/01_cross_entropy_soft_dice.ipynb) | 6 | ██░░░ | loss 결합·gradient 확인 |
-| 5.2 | [Surface Distance, NSD & HD95](studies/prerequisites/part05_losses_physical_space_evaluation/02_surface_distance_nsd_hd95.ipynb) | 6 | ████░ | surface distance·mm tolerance |
-| 5.3 | [Empty Masks & Case Aggregation](studies/prerequisites/part05_losses_physical_space_evaluation/03_empty_masks_case_aggregation.ipynb) | 5 | ███░░ | 예외 처리·case/class 집계 순서 |
-| 6.1 | [Fingerprint, Plans & Preprocessing](studies/prerequisites/part06_nnunet_v2_literacy/01_dataset_fingerprint_plans_preprocessing.ipynb) | 6 | ████░ | nnU-Net planning·preprocessing flow |
-| 6.2 | [Default Foreground Oversampling](studies/prerequisites/part06_nnunet_v2_literacy/02_default_foreground_oversampling.ipynb) | 6 | ███░░ | case·foreground·class·center 선택 |
-| 6.3 | [Deep Supervision & Predictor](studies/prerequisites/part06_nnunet_v2_literacy/03_deep_supervision_predictor.ipynb) | 6 | ████░ | multi-scale Tensor·inference flow |
-| 7.1 | [Split, Leakage & Reproducibility](studies/prerequisites/part07_research_hygiene_statistics/01_split_leakage_reproducible_runs.ipynb) | 6 | ██░░░ | statistical unit·manifest·seed |
-
-</details>
-
-The notebooks are educational implementations, not the experiment runners.
-
-<details>
-<summary>Running the notebooks and reading their execution record</summary>
-
-Open a notebook, install its imports in your own Python environment, and run cells
-from top to bottom. CUDA-memory exercises require a CUDA-capable GPU. Saved kernel
-names describe the original workstation and may need to be reselected elsewhere.
-
-The archive contains 111 non-empty code cells. A static check found no syntax errors
-or saved exceptions; nine cells in Parts 1–3 have no execution count. This is not a
-claim that every notebook has been rerun or that educational examples validate
-performance on patient data.
-
-</details>
-
 <a id="conference"></a>
 ## Manuscript & conference
-
-**Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with
-Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
-
-*3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
 [Read the manuscript (PDF)](paper/manuscript_kiit_2026.pdf)
 
@@ -338,7 +272,7 @@ Prepared for the **KIIT 2026 Fall Conference — Undergraduate Paper Competition
 | :--- | :--- |
 | Organizer | Korean Institute of Information Technology (한국정보기술학회) |
 | Conference | November 26–28, 2026 · Maison Glad Jeju, South Korea |
-| Participation | Undergraduate paper competition · sole author Yongmin Park |
+| Track | Undergraduate paper competition |
 | Current status | Preparing to participate; conference has not yet taken place as of September 30, 2026 |
 
 Dates and venue: [official conference website](https://ki-it.or.kr/conference/fallconf26).
@@ -348,7 +282,7 @@ Presentation slides and any award documentation will be added when available.
 
 ```text
 hierarchical-patch-sampling-3d/
-├── README.md                Research overview, results, notebook index
+├── README.md                Method, experimental setup, results
 ├── paper/
 │   ├── manuscript_kiit_2026.pdf
 │   ├── figures/             fig01–fig04: method and experimental results
@@ -356,10 +290,11 @@ hierarchical-patch-sampling-3d/
 └── studies/prerequisites/   20 educational notebooks
 ```
 
-**Published code is limited to `studies/`.** Training/evaluation implementation,
+**Published code is limited to [study notebooks](studies/prerequisites).** These are
+educational examples, not the experiment runners. Training/evaluation implementation,
 infrastructure scripts, raw CT/masks, checkpoints, and internal reports are not
-included in the current public tree. This is a research portfolio and study archive,
-not a complete experiment-reproduction release. No clinical-use claim is made.
+included in the current public tree. This is not a complete experiment-reproduction
+release. No clinical-use claim is made.
 
 The work builds on [TotalSegmentator](https://github.com/wasserth/TotalSegmentator)
 and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).

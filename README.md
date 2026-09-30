@@ -1,44 +1,78 @@
 # Hierarchical Patch Sampling for 3D CT
 
-**Organ-wise learning states and semantic error types for adaptive multi-organ segmentation.**
+**Adaptive patch sampling through hierarchical conditional probabilities.**
 
-[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Study notebooks](#study-notebooks)
+[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Conference](#conference) · [Study notebooks](#study-notebooks)
 
 Yongmin Park (박용민) · Computer Science, Kyonggi University · [Laplace-tech](https://github.com/Laplace-tech)
 
-This sole-author undergraduate project investigates **which patches a model should
-learn from during 3D abdominal CT segmentation**. It keeps the nnU-Net architecture
-and adapts patch selection using organ-level learning states and prediction errors.
-
-The repository contains the manuscript, figures, experimental summaries, and
-20 foundational study notebooks. Saved experiments retain the name `OLES3D`.
+This sole-author study investigates patch selection for **3D abdominal CT
+multi-organ segmentation**. Organ-wise learning states and error types guide
+sampling while the nnU-Net architecture stays unchanged.
 
 ## Research question
 
-**Can organ-wise learning states and semantic error types improve learning at a fixed update budget?**
-
-Patch-based training cannot show every part of a 3D CT at every update.
-Uniform or foreground-centered sampling does not explicitly distinguish an organ
-that is still being missed from a boundary error or a false-positive region.
-The proposed sampler uses those distinctions to allocate patch-sampling probability.
+**Can a hierarchy of organ- and error-conditioned sampling decisions improve
+segmentation at a fixed update budget?**
 
 ## Method
 
 ![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
 
-The guided sampling branch makes three choices:
+The guided branch uses **hierarchical conditional probabilities**: select an organ
+$k$, an error type $r$ within that organ, and a candidate center $c$ within that pool.
 
-1. **Select an organ** using its smoothed Dice deficit.
-2. **Select an error type** using the organ's candidate pools and error-type state.
-3. **Select a candidate center** and extract the 3D training patch.
+$$
+p_t(k,r,c)=
+\underbrace{p_t(k)}_{\text{organ}}
+\underbrace{p_t(r\mid k)}_{\text{error type}}
+\underbrace{p_t(c\mid k,r)}_{\text{patch center}}.
+$$
 
-The guided branch factorizes selection as
+Organ selection uses a smoothed Dice deficit; error-type selection combines current
+candidate counts with historical error shares. A 3D patch is cropped around the
+selected center. These probabilities describe the guided branch, not every patch.
 
-$$p_t(k,r,c)=p_t(k)\,p_t(r\mid k)\,p_t(c\mid k,r).$$
+<details>
+<summary>Sampling equations · learning states and conditional distributions</summary>
 
-Learning states are smoothed over time, and reference/adaptive mixtures limit
-concentration on a few candidates. Only the guided sampling branch is described
-here; the rest of the nnU-Net pipeline is retained.
+For the current training case, $K_t$ contains organs with candidates,
+$R_t(k)$ contains their non-empty error types, and $C_t(k,r)$ is a candidate pool.
+States are updated from training-only observer patches, not validation labels.
+
+**1. Organ learning state and selection**
+
+Let $D_k^{(t)}$ be the observed hard Dice for organ $k$. Its deficit is smoothed
+with an exponential moving average (EMA):
+
+$$e_t(k)=1-D_k^{(t)},\qquad d_t(k)=\beta d_{t-1}(k)+(1-\beta)e_t(k).$$
+
+$$p_t(k)=\frac{1-\lambda_k}{|K_t|}+\lambda_k\frac{d_t(k)}{\sum_{j\in K_t}d_t(j)}.$$
+
+Here $\beta=0.9$ and $\lambda_k=0.5$. The uniform component keeps each eligible
+organ selectable: $p_t(k)\geq(1-\lambda_k)/|K_t|$.
+
+**2. Error type conditioned on the selected organ**
+
+$$b_t(r\mid k)=\frac{|C_t(k,r)|}{\sum_{r'\in R_t(k)}|C_t(k,r')|}.$$
+
+$$p_t(r\mid k)=(1-\lambda_r)b_t(r\mid k)+\lambda_r a_t(r\mid k).$$
+
+$a_t(r\mid k)$ is the EMA of observed error-type shares, renormalized over
+available types; $\lambda_r=0.5$. Those shares use raw observer error counts,
+whereas $b_t$ uses bounded candidate-pool counts.
+
+**3. Center conditioned on organ and error type**
+
+$$p_t(c\mid k,r)=\frac{1}{|C_t(k,r)|},\qquad c\in C_t(k,r).$$
+
+Each EMA starts from its first valid observation. Both-empty Dice observations
+are skipped. Zero total organ difficulty falls back to uniform selection;
+unavailable error-state mass falls back to the candidate-count distribution.
+The hierarchy and mixtures follow the manuscript; the probability lower bound
+above is a direct consequence, not an additional method.
+
+</details>
 
 | Candidate type | What the model is getting wrong | What the patch targets |
 | :--- | :--- | :--- |
@@ -49,9 +83,17 @@ here; the rest of the nnU-Net pipeline is retained.
 ![3D pancreas surface, error candidates, and conditional error-type probabilities](paper/figures/fig02_error_candidate_topology.png)
 
 *Training case `s0004` · pancreas · P / seed 55254 / 10K updates.*
-Markers are bounded candidate reservoirs, not all erroneous voxels. The highlighted
-center is illustrative rather than a recorded training draw; the surface is smoothed
-for display.
+Markers show bounded candidate reservoirs, not every error. The highlighted center
+is illustrative, not a recorded training draw; surface smoothing is for display.
+
+### From conditional probabilities to a 3D patch
+
+![Saved organ probabilities, conditional error-type probabilities and an illustrated 3D CT crop](paper/figures/fig04_conditional_probability_hierarchy.png)
+
+The saved state links eight eligible organs to their error-type distributions and
+an illustrative pancreas-centered crop; the gallbladder pool is empty in this snapshot.
+These are sampling probabilities, not prediction confidence.
+[Editable SVG](paper/figures/fig04_conditional_probability_hierarchy.svg) · [Source values](paper/results/figure04_probability_snapshot.json)
 
 ## Experimental setup
 
@@ -77,7 +119,21 @@ budget matched while varying sampling. B1/A1/P share the online candidate mechan
 | **B0** · nnU-Net foreground oversampling | — | — | — |
 | **B1** · static candidate allocation | ✓ | — | — |
 | **A1** · organ-adaptive allocation | ✓ | ✓ | — |
-| **P** · OLES3D | ✓ | ✓ | ✓ |
+| **P** · hierarchical conditional sampling | ✓ | ✓ | ✓ |
+
+For policy $m$ at update $u$, case-first macro Dice and the P–B0 difference are
+
+$$
+S_m(u)=\frac{1}{N}\sum_{i=1}^{N}
+\left(\frac{1}{9}\sum_{k=1}^{9}\mathrm{Dice}_{i,k}^{(m,u)}\right),
+$$
+
+$$
+\Delta_{\mathrm{pp}}(u)=100\left[S_P(u)-S_{B0}(u)\right].
+$$
+
+Each case and organ has equal weight. These are full-volume evaluation scores,
+distinct from the observer-patch Dice used for sampling.
 
 ## Results
 
@@ -89,8 +145,7 @@ All evaluations use the same 28 validation cases.*
 
 ### Discovery: early improvement in one seed
 
-Seed **55254**, **28 validation cases**. All entries use full-volume inference,
-not training-time patch pseudo Dice.
+Seed **55254**, **28 validation cases**.
 
 | Policy | 10K Dice | 20K Dice | 30K Dice |
 | :--- | ---: | ---: | ---: |
@@ -102,8 +157,7 @@ not training-time patch pseudo Dice.
 
 [Download the discovery table](paper/results/table01_discovery.csv).
 
-P led B0 by **5.12 percentage points at 10K** in the discovery run. The difference
-was much smaller at 20K and nearly absent at 30K.
+The early P–B0 difference narrowed at 20K and was nearly absent at 30K.
 
 ### Replication: the improvement was not consistent
 
@@ -121,9 +175,8 @@ The mean difference had a paired seed × case bootstrap 95% interval of
 **[−3.8562, +4.2047] pp**. Only one seed was positive: the confirmatory criterion
 was **not met**.
 
-**Conclusion:** the hierarchical sampler was implemented and evaluated, but the
-experiments do not establish consistent early-learning or final-performance
-superiority. Wall-clock speedup is not claimed because cloud runtime conditions varied.
+**The experiments do not establish consistent early-learning or final-performance
+superiority.** Wall-clock speedup is not claimed because cloud runtime conditions varied.
 
 [Replication CSV](paper/results/table02_replication.csv) · [Surface metrics CSV](paper/results/table04_surface_metrics.csv) · [Exploratory test CSV](paper/results/table03_exploratory_test.csv)
 
@@ -131,23 +184,14 @@ superiority. Wall-clock speedup is not claimed because cloud runtime conditions 
 <details>
 <summary>Evaluation details, surface metrics and exploratory test</summary>
 
-These tables summarize saved full-volume evaluation artifacts. They do not use
-training-time patch pseudo Dice. Numbers are shown on the Dice 0–1 scale;
-**pp** means percentage points, computed as `100 × (P − B0)`.
-Publication export: 2026-09-30. No models were retrained for this export.
+Exported from saved evaluations on 2026-09-30; no retraining for this release.
 
 ### Experimental scope
 
-TotalSegmentator v2.0.1 was filtered to 602 eligible cases with non-empty masks for
-all nine target organs. The official split roles were retained: 525 train, 28
-validation, 49 test. Patient independence beyond those official split assignments
-was not independently established. Eligibility does not guarantee complete organ
-coverage or represent every field of view in the original 1,228-case release.
-
-Each case contributes the mean of its nine organ Dice scores, and cases are then
-averaged with equal weight. For repeated-seed summaries, those case-first means
-are averaged across seeds. A non-empty ground truth with an empty prediction has
-Dice zero.
+Patient independence beyond the official split was not independently established.
+The filtered cohort does not represent every field of view in the 1,228-case release.
+Repeated-seed summaries weight seeds equally. An empty prediction against a
+non-empty reference mask has Dice zero.
 
 | Stage | Seeds | Policies | Full-volume evaluation checkpoints |
 | :--- | :--- | :--- | :--- |
@@ -156,27 +200,14 @@ Dice zero.
 | Additional replication | 55257 | B0, P only | 5K / 10K / 15K / 20K / 25K / 30K |
 | Post-primary exploratory test | 55254, 55255 | B0, P only | 10K / 30K |
 
-The B0/P replication summary below uses **all three** replication seeds.
-Seed 55254 is discovery and is excluded from that primary summary.
+### Primary check and uncertainty
 
-### Independent replication: the primary check
-
-At 10K updates on the same 28 validation cases:
-
-| Replication seed | P − B0 (pp) |
-| :--- | ---: |
-| 55255 | +4.3806 |
-| 55256 | −1.4315 |
-| 55257 | −3.8317 |
-| **Mean** | **−0.2942** |
-
-The mean Dice was **0.786975 for B0** and **0.784033 for P**.
-The paired seed × case percentile-bootstrap 95% interval for P − B0 was
-**[−3.8562, +4.2047] pp** (100,000 resamples).
-The prespecified criterion required positive differences in all replication seeds
-and a positive lower confidence bound. It was **not met**.
-Three seeds provide limited precision for seed-level uncertainty; resampling
-patients/cases does not create additional independent training runs.
+All three replication seeds enter the primary summary; discovery seed 55254 does not.
+At 10K, mean Dice was **0.786975 for B0** and **0.784033 for P**.
+The criterion required positive differences in every replication seed and a positive
+lower confidence bound. The paired seed × case percentile bootstrap used 100,000
+resamples. Three seeds still give limited seed-level precision; resampling cases
+does not create additional training runs.
 
 [All six checkpoints and per-seed differences (CSV)](paper/results/table02_replication.csv).
 
@@ -216,30 +247,18 @@ The intervals describe variability within this two-seed, 49-case evaluation;
 they do not account for the preceding seed-selection decision.
 [Unrounded test summaries (CSV)](paper/results/table03_exploratory_test.csv).
 
-### Interpretation and release scope
+### Evidence and release scope
 
-- The contribution is an implemented, evaluated hierarchical organ/error-type
-  sampling design and its controlled comparison with nnU-Net sampling.
-- The discovery run and selected-seed test show early gains, but independent-seed
-  replication does not establish a consistent improvement.
-- The experiment does not demonstrate final-Dice superiority, clinical benefit,
-  formal equivalence, or robust wall-clock savings. Cloud host variability makes
-  cross-host runtime claims inappropriate.
-- The manuscript focuses on the discovery comparison; this companion includes
-  the broader replication and exploratory-test evidence so that the public
-  overview is not limited to the favorable run.
+The manuscript focuses on the discovery comparison; this repository also includes
+replication and exploratory-test evidence. Neither clinical benefit nor formal
+equivalence is established.
 
-The [source manifest](paper/results/source_manifest.json) records local source-artifact names and
-SHA-256 hashes for the exported aggregate numbers. Source artifacts and research
-implementation are not included in the public tree. These hashes document
-provenance; they are not a substitute for a full reproducibility release.
+The [source manifest](paper/results/source_manifest.json) records source-artifact
+names and SHA-256 hashes for the aggregate numbers, not a full reproduction package.
 
-The [overview figure](paper/figures/fig03_learning_dynamics.png) is also available as an
-[editable vector SVG](paper/figures/fig03_learning_dynamics.svg). The CT and 3D method figures
-are supplied manuscript assets derived from TotalSegmentator, not synthetic
-generative images. The illustrated training case is `s0004`; error candidates
-come from a bounded observer snapshot and need not represent all voxel errors
-at a single simultaneous prediction time.
+The results graph is available as an [editable SVG](paper/figures/fig03_learning_dynamics.svg).
+The supplied CT/3D figures derive from TotalSegmentator, not generative images.
+Candidate snapshots may combine observations from different refresh times.
 
 </details>
 
@@ -302,7 +321,8 @@ performance on patient data.
 
 </details>
 
-## Manuscript & repository scope
+<a id="conference"></a>
+## Manuscript & conference
 
 **Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with
 Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
@@ -310,16 +330,29 @@ Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segme
 *3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
 [Read the manuscript (PDF)](paper/manuscript_kiit_2026.pdf)
-— prepared for KIIT 2026 Fall. This repository labels it as a manuscript;
-acceptance, publication, or an award is not asserted here.
+
+Prepared for the **KIIT 2026 Fall Conference — Undergraduate Paper Competition**
+(2026 한국정보기술학회 추계종합학술대회 및 대학생논문경진대회).
+
+| Item | Details |
+| :--- | :--- |
+| Organizer | Korean Institute of Information Technology (한국정보기술학회) |
+| Conference | November 26–28, 2026 · Maison Glad Jeju, South Korea |
+| Participation | Undergraduate paper competition · sole author Yongmin Park |
+| Current status | Preparing to participate; conference has not yet taken place as of September 30, 2026 |
+
+Dates and venue: [official conference website](https://ki-it.or.kr/conference/fallconf26).
+Presentation slides and any award documentation will be added when available.
+
+## Repository scope
 
 ```text
 hierarchical-patch-sampling-3d/
 ├── README.md                Research overview, results, notebook index
 ├── paper/
 │   ├── manuscript_kiit_2026.pdf
-│   ├── figures/             fig01–fig03: method and experimental results
-│   └── results/             table01–table04: aggregate CSVs and source hashes
+│   ├── figures/             fig01–fig04: method and experimental results
+│   └── results/             Aggregate CSVs, sampling probabilities, source hashes
 └── studies/prerequisites/   20 educational notebooks
 ```
 

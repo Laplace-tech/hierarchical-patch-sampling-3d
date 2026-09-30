@@ -19,12 +19,15 @@
 !/paper/figures/fig02_error_candidate_topology.png
 !/paper/figures/fig03_learning_dynamics.png
 !/paper/figures/fig03_learning_dynamics.svg
+!/paper/figures/fig04_conditional_probability_hierarchy.png
+!/paper/figures/fig04_conditional_probability_hierarchy.svg
 !/paper/results/
 !/paper/results/table01_discovery.csv
 !/paper/results/table02_replication.csv
 !/paper/results/table03_exploratory_test.csv
 !/paper/results/table04_surface_metrics.csv
 !/paper/results/source_manifest.json
+!/paper/results/figure04_probability_snapshot.json
 
 # Always exclude generated notebook copies, environments, caches and credentials.
 **/.ipynb_checkpoints/

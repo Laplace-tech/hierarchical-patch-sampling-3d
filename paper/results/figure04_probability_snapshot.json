@@ -1,0 +1,151 @@
+{
+  "case_id": "s0004",
+  "split": "training",
+  "policy": "P",
+  "seed": 55254,
+  "updates": 10000,
+  "source_sha256": {
+    "data/nnunet/nnUNet_raw/Dataset501_OLES3D9Organs/imagesTr/s0004_0000.nii.gz": "baa9c991baf4d7d24b32e6e1149e1972b6a29694a208c37b4697b7275aeb6c1e",
+    "data/nnunet/nnUNet_raw/Dataset501_OLES3D9Organs/labelsTr/s0004.nii.gz": "e46007dd37916cf37cfbdc649ad0327aba3248d4287853aa3f55bdeee334d938",
+    "data/nnunet/nnUNet_results/main/p_seed_55254/Dataset501_OLES3D9Organs/nnUNetTrainerOLES3DPAdaptive__nnUNetPlans__3d_fullres/fold_all/candidate_state_checkpoints/epoch_040/s0004.npz": "877a278a18596f4fcda9b7016639b450a3f23644ecc6f328ebe82d7482061913",
+    "data/nnunet/nnUNet_results/main/p_seed_55254/Dataset501_OLES3D9Organs/nnUNetTrainerOLES3DPAdaptive__nnUNetPlans__3d_fullres/fold_all/candidate_state_checkpoints/epoch_040/_p_learning_state.json": "3fbd04f214ee45ea5075234f3d8e0667ef5b727d70d83aba2d2804e9c2caa048",
+    "data/nnunet/nnUNet_results/main/p_seed_55254/Dataset501_OLES3D9Organs/nnUNetTrainerOLES3DPAdaptive__nnUNetPlans__3d_fullres/fold_all/candidate_state_checkpoints/epoch_040/oles3d_observer_state.json": "2242ae20238c784735714108e4b72c13bfc989d1083f4b175a002440c83e3564"
+  },
+  "organ_probabilities": {
+    "1": 0.07999874673983384,
+    "2": 0.10339335754242913,
+    "3": 0.09306767961084138,
+    "5": 0.07692740498331477,
+    "6": 0.12017184256554472,
+    "7": 0.13403552896066268,
+    "8": 0.2217671048501716,
+    "9": 0.17063833474720186
+  },
+  "conditional_error_probabilities": {
+    "1": {
+      "interior_miss": 0.310409667895427,
+      "boundary_disagreement": 0.5874849216989789,
+      "exterior_false_positive": 0.10210541040559414
+    },
+    "2": {
+      "interior_miss": 0.23729023540019664,
+      "boundary_disagreement": 0.5185156659404513,
+      "exterior_false_positive": 0.2441940986593521
+    },
+    "3": {
+      "interior_miss": 0.2981881774170232,
+      "boundary_disagreement": 0.4772302599466496,
+      "exterior_false_positive": 0.22458156263632717
+    },
+    "5": {
+      "interior_miss": 0.3217161938410994,
+      "boundary_disagreement": 0.41668326776415665,
+      "exterior_false_positive": 0.261600538394744
+    },
+    "6": {
+      "interior_miss": 0.3696165838351349,
+      "boundary_disagreement": 0.31891328620548726,
+      "exterior_false_positive": 0.3114701299593779
+    },
+    "7": {
+      "interior_miss": 0.27940737585280656,
+      "boundary_disagreement": 0.38891573532324036,
+      "exterior_false_positive": 0.3316768888239531
+    },
+    "8": {
+      "interior_miss": 0.33775407812057445,
+      "boundary_disagreement": 0.6622459218794257
+    },
+    "9": {
+      "interior_miss": 0.13159124670585134,
+      "boundary_disagreement": 0.8684087532941487
+    }
+  },
+  "candidate_counts": {
+    "1": {
+      "interior_miss": 512,
+      "boundary_disagreement": 512,
+      "exterior_false_positive": 29
+    },
+    "2": {
+      "interior_miss": 512,
+      "boundary_disagreement": 498,
+      "exterior_false_positive": 512
+    },
+    "3": {
+      "interior_miss": 512,
+      "boundary_disagreement": 512,
+      "exterior_false_positive": 512
+    },
+    "4": {
+      "interior_miss": 0,
+      "boundary_disagreement": 0,
+      "exterior_false_positive": 0
+    },
+    "5": {
+      "interior_miss": 512,
+      "boundary_disagreement": 512,
+      "exterior_false_positive": 512
+    },
+    "6": {
+      "interior_miss": 512,
+      "boundary_disagreement": 512,
+      "exterior_false_positive": 512
+    },
+    "7": {
+      "interior_miss": 512,
+      "boundary_disagreement": 512,
+      "exterior_false_positive": 512
+    },
+    "8": {
+      "interior_miss": 256,
+      "boundary_disagreement": 373,
+      "exterior_false_positive": 0
+    },
+    "9": {
+      "interior_miss": 6,
+      "boundary_disagreement": 106,
+      "exterior_false_positive": 0
+    }
+  },
+  "guided_joint_probability_sum": 1.0,
+  "illustrated_branch": {
+    "organ_id": 7,
+    "error_type": "boundary_disagreement",
+    "candidate_count": 512,
+    "center_zyx": [
+      230,
+      110,
+      98
+    ],
+    "joint_organ_error_probability": 0.0521285263051756,
+    "center_path_probability": 0.0001018135279397961,
+    "is_logged_random_draw": false
+  },
+  "probability_scope": "Current case, guided branch, saved observer state; not prediction confidence",
+  "display": {
+    "png_pixels": [
+      5760,
+      2412
+    ],
+    "ct_window_hu": [
+      -150,
+      250
+    ],
+    "surface_smoothing_sigma_voxels": 0.65,
+    "patch_size_zyx": [
+      160,
+      112,
+      128
+    ],
+    "ct_plane": "actual inferior slice of the illustrated crop"
+  },
+  "checks": [
+    "source hashes match prior topology",
+    "normalized probabilities",
+    "computed with experiment allocation classes",
+    "center exists in reservoir",
+    "patch inside volume",
+    "probabilities match prior topology"
+  ]
+}

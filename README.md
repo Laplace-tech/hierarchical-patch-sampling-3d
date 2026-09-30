@@ -20,8 +20,7 @@ Organ selection uses a smoothed Dice deficit; error-type selection combines curr
 candidate counts with historical error shares. A 3D patch is cropped around the
 selected center. These probabilities describe the guided branch, not every patch.
 
-<details>
-<summary>🔢 (Click) Sampling equations · learning states and conditional distributions</summary>
+### 🔢 Sampling equations
 
 For the current training case, $K_t$ contains organs with candidates,
 $R_t(k)$ contains their non-empty error types, and $C_t(k,r)$ is a candidate pool.
@@ -58,8 +57,6 @@ are skipped. Zero total organ difficulty falls back to uniform selection;
 unavailable error-state mass falls back to the candidate-count distribution.
 The hierarchy and mixtures follow the manuscript; the probability lower bound
 above is a direct consequence, not an additional method.
-
-</details>
 
 | Candidate type | What the model is getting wrong | What the patch targets |
 | :--- | :--- | :--- |
@@ -171,7 +168,7 @@ was **not met**.
 | --- | --- |
 | Conference | 2026 한국정보기술학회 추계종합학술대회 · 대학생논문경진대회 |
 | Research Area | Deep Learning · Medical AI · Medical Image Segmentation |
-| Author | 박용민 (**First Author**) |
+| Author | 박용민 (**Sole Author**) |
 | Email | add28482848@kyonggi.ac.kr |
 | Affiliation | 경기대학교 AI컴퓨터공학부 |
 

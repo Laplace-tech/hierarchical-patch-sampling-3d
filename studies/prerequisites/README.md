@@ -7,9 +7,11 @@ geometry, sampling, evaluation으로 연결한 scratch 학습 기록이다.
 과정 종료는 독립 숙련 인증이나 실제 nnU-Net 학습 성공을 의미하지 않는다.
 7.2 paired evaluation·bootstrap은 실제 연구 결과 분석 단계로 이관했다.
 
-현재 연구 진도·일정·다음 단계는 [Research](../../research/README.md),
-학습·검증·자동화 방식은 [AGENTS.md](../../AGENTS.md) 한 곳에서 관리한다.
-이 문서에서는 종료한 학습 목차와 실행 근거만 유지한다.
+[연구 소개](../../README.md) · [논문·실험 결과](../../paper/RESULTS.md)
+
+이 공개 archive는 연구에 앞서 진행한 학습 목차와 실행 근거를 담는다.
+실제 OLES3D training/evaluation pipeline은 공개 범위에 포함하지 않는다.
+Notebook의 교육용 구현과 논문의 실험 구현을 구분해서 참고한다.
 
 ## 실행 근거
 
@@ -78,9 +80,11 @@ Cell 수는 `Cell 0 — Project Imports`를 포함한 non-empty code cell 기준
 
 ## 복습 방식
 
-필요한 개념을 실제 연구 단계에서 작은 예제와 함께 다시 확인한다.
-명시적인 scratch study에서는 설명 → 채팅의 learner cell → 직접 입력·실행 →
-저장된 결과 확인 순서를 따른다. 연구 자동화·환경 수리는 별도 작업 방식이다.
-강제 구술시험이나 전체 과정 재시작은 연구 진입 조건이 아니다.
+각 notebook을 열어 설명·Tensor shape·주석을 읽고 위에서 아래로 실행한다.
+장기 학습 및 CUDA memory 측정 cell은 GPU와 실행 시간이 필요할 수 있다.
+핵심 package는 각 notebook의 `Cell 0 — Project Imports`에 명시되어 있다.
+저장된 kernel 표시명은 작성 당시 환경 정보이며, 다른 컴퓨터에서는 해당
+package가 설치된 자신의 Jupyter kernel을 선택해야 한다.
 
-다음 연구 위치는 [현재 checkpoint](../../research/README.md#checkpoint)에서 확인한다.
+교육용 synthetic example의 결과를 실제 환자에 대한 성능으로 해석하지 않는다.
+연구 적용 결과와 한계는 [프로젝트 소개](../../README.md)에서 확인할 수 있다.

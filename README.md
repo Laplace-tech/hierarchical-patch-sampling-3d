@@ -1,85 +1,173 @@
+<div align="center">
+
 # OLES3D
 
-**Organ-wise Learning-State and Error-Type-Guided Adaptive Patch Sampling for 3D Abdominal CT Segmentation**
+### Organ-wise learning states. Error-aware patch sampling.
 
-TotalSegmentator v2.0.1 복부 CT에서 nnU-Net v2의 architecture를 유지하고,
-**training patch 선택 정책**을 연구한다. 장기별 interior miss, boundary
-disagreement, exterior false positive를 구분해 학습 자원을 배분하는 것이
-제안 방향이다. 효과와 academic novelty는 비교 실험으로 검증할 사항이다.
+**A research project on how a 3D segmentation model chooses what to learn next.**
 
-## 프로젝트 목적
+[Manuscript](<paper/2026_KIIT_추계(대학생)_박용민_논문.hwp.pdf>) · [Results & limitations](paper/RESULTS.md) · [Study notebooks](studies/prerequisites/README.md)
 
-1. KIIT 2026 추계 대학생논문경진대회 금상을 목표로 논문과 발표 완성.
-   수상은 외부 심사 결과이며 보장하지 않는다.
-2. 연구자 박용민(마벨러스)이 데이터·실험 설계·결과 해석을 직접 익히며
-   Medical AI 연구 역량 축적.
-3. 단독저자로 설명하고 재현할 수 있는 논문과 포트폴리오 구축.
+Yongmin Park (박용민) · Computer Science, Kyonggi University · [Laplace-tech](https://github.com/Laplace-tech)
 
-연구자: [Laplace-tech](https://github.com/Laplace-tech).
+</div>
 
-## 어디부터 볼 것인가
+![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](<paper/Figure2(1).jpg>)
 
-| 목적 | 문서 | 관리 범위 |
-| --- | --- | --- |
-| 연구 재개 | [Research](research/README.md) | 현재 checkpoint, 미결정 사항, 일정, 실행 명령, 근거 |
-| 산출물 재생성 | [단계별 복사 명령](research/README.md#artifact-commands) | 단계별 실행 명령·결과 파일 |
-| 선행 학습 복습 | [Prerequisites](studies/prerequisites/README.md) | 종료한 20개 lesson과 실행 기록 |
-| 에이전트 행동 기준 | [AGENTS.md](AGENTS.md) | 설명·자동화·학습·수리·Git 권한 |
+OLES3D studies **adaptive patch selection for 3D abdominal CT multi-organ segmentation**.
+Instead of adding a new backbone, it keeps nnU-Net's segmentation architecture and
+changes which training patches the model sees: first select an organ using its
+learning state, then an error type, then a candidate patch center.
 
-**[통일 로드맵](research/README.md#roadmap)·진행 상태·Due Date·다음 gate는 Research 문서 한 곳에서만 갱신한다.**
+This sole-author undergraduate project connects medical-image geometry, dataset
+auditing, sampler implementation, controlled experiments, and scientific writing.
+The public repository presents the manuscript, research figures, aggregate results,
+and the scratch notebooks used to build the foundations.
 
-## 연구 범위
+| Data | Task | Comparison | Learning record |
+| :--- | :--- | :--- | :--- |
+| 602 eligible CT volumes | 9 abdominal organs | B0 / B1 / A1 / P | 20 study notebooks |
 
-- Task: 3D abdominal CT multi-class segmentation.
-- Data: TotalSegmentator v2.0.1 공개 데이터. Small은 점검용 subset이며 full과 독립된 데이터가 아니다.
-- 목표 장기: spleen, 양쪽 kidney, gallbladder, liver, stomach, pancreas, 양쪽 adrenal gland.
-- Framework: nnU-Net v2, patch-based 3D training. 학습·평가 cohort와 구체적인 plan은 별도 결정.
-- 핵심 비교 축: default sampler(B0), matched-static sampler(B1), organ-wise adaptive
-  sampler(A1), organ-wise error-type adaptive sampler(P).
-- 통제 대상: label, split, architecture, loss, augmentation, 초기화와 update 예산.
-- 평가 방향: case-first selected-organ macro Dice와 장기별 결과, 실행 시간·VRAM·sampler 비용.
-- 실행 범위: B0/B1/A1/P를 seed `55254` 한 번씩 실행하는 single-seed proof-of-concept.
+## Research question
 
-새 backbone·attention·loss를 동시에 추가하지 않는다.
-Candidate-pool 구조는 B0/B1, organ-wise adaptation은 B1/A1, error-type 구분은 A1/P의
-직접 비교로 평가한다.
-Single-seed 결과로 training randomness에 대한 안정성이나 평균 성능을 주장하지 않는다.
-정확한 비교군, empty-mask 처리와 평가 규칙은 [연구 결정 표](research/README.md#decisions)를 따른다.
+**Can organ-wise learning states and semantic error types improve learning at a fixed update budget?**
 
-## 저장소 구조
+Patch-based training cannot show every part of a 3D CT at every update.
+Uniform or foreground-centered sampling does not explicitly distinguish an organ
+that is still being missed from a boundary error or a false-positive region.
+OLES3D uses those distinctions to allocate patch-sampling probability.
+
+```text
+Training-only observations
+          │
+          ▼
+Organ learning state ──► organ k ──► error type r ──► center c ──► 3D patch
+                        p(k)         p(r | k)        p(c | k, r)
+```
+
+The guided branch factorizes selection as
+
+$$p_t(k,r,c)=p_t(k)\,p_t(r\mid k)\,p_t(c\mid k,r).$$
+
+Organ-wise Dice deficits and observed error-type shares are smoothed over time.
+Mixtures of reference and adaptive distributions limit excessive concentration.
+Candidate coordinates are sampled within the selected pool. The diagram describes
+the guided selection mechanism, not a replacement for the complete nnU-Net pipeline.
+
+| Candidate type | What the model is getting wrong | What the patch targets |
+| :--- | :--- | :--- |
+| Interior miss | Missed voxels inside the reference organ, away from its boundary | Organ recognition |
+| Boundary disagreement | Prediction–label disagreement near the organ surface | Boundary delineation |
+| Exterior false positive | That organ predicted outside the reference boundary band | Confusion with surrounding tissue |
+
+![3D pancreas surface, error candidates, and conditional error-type probabilities](paper/3D_topology_probability_editable.jpg)
+
+*Method illustration from training case `s0004`, pancreas, P / seed 55254 / 10K
+updates. Markers show bounded error-candidate reservoirs around the reference
+surface, not every erroneous voxel. The highlighted center illustrates patch
+selection; it is not a recorded optimizer sample. Surface smoothing is for display.*
+
+## Controlled experiment
+
+| Setting | Configuration |
+| :--- | :--- |
+| Dataset | TotalSegmentator v2.0.1 |
+| Cohort | 602 eligible cases with all nine target masks non-empty |
+| Official split retained | 525 train / 28 validation / 49 test |
+| Framework | nnU-Net v2.8.1 · `3d_fullres` |
+| Spacing / patch / batch | 1.5 mm isotropic / `160 × 112 × 128` / 2 |
+| Training budget | 30,000 optimizer updates per run |
+| Main metric | Organ macro Dice within each case, then the mean across cases |
+
+Targets: spleen, right/left kidneys, gallbladder, liver, stomach, pancreas,
+and right/left adrenal glands. Non-empty labels do **not** establish complete
+anatomical coverage. Cohort filtering narrows the population to which results apply.
+
+The comparisons keep the network, preprocessing, loss, augmentation, and update
+budget matched while varying sampling. B1/A1/P share the online candidate mechanism.
+
+| Policy | Online error candidates | Organ adaptation | Error-type adaptation |
+| :--- | :---: | :---: | :---: |
+| **B0** · nnU-Net foreground oversampling | — | — | — |
+| **B1** · static candidate allocation | ✓ | — | — |
+| **A1** · organ-adaptive allocation | ✓ | ✓ | — |
+| **P** · OLES3D | ✓ | ✓ | ✓ |
+
+## Results: discovery and replication
+
+![Discovery learning curves and independent-seed replication of the 10K P-minus-B0 difference](paper/assets/evidence_overview.png)
+
+**Discovery — seed 55254, 28 validation cases.** All entries below use full-volume
+inference, not training-time patch pseudo Dice.
+
+| Policy | 10K Dice | 20K Dice | 30K Dice |
+| :--- | ---: | ---: | ---: |
+| B0 | 0.745542 | 0.898442 | 0.923552 |
+| B1 | 0.711985 | 0.896431 | 0.922776 |
+| A1 | 0.733086 | 0.897731 | 0.923548 |
+| P | **0.796770** | **0.908046** | 0.923413 |
+| P − B0 | **+5.1228 pp** | **+0.9603 pp** | −0.0139 pp |
+
+The discovery run showed an early advantage that largely disappeared by 30K.
+That observation motivated an independent-seed check; it is not, by itself,
+evidence of a reliable speedup or final-performance improvement.
+
+**Replication — seeds 55255 / 55256 / 55257, same 28 validation cases.**
+At the preselected 10K endpoint, P − B0 was **+4.3806 / −1.4315 / −3.8317 pp**.
+The mean was **−0.2942 pp**, with a paired seed × case bootstrap 95% interval of
+**[−3.8562, +4.2047] pp**. Only one of three seeds was positive, so the
+confirmatory success criterion was **not met**.
+
+The research establishes an implemented and evaluated hierarchical sampling design,
+but **does not establish consistent early-learning superiority**. Final Dice,
+surface-distance checks, and exploratory held-out results are documented in
+[the result tables](paper/RESULTS.md), including their limitations.
+Wall-clock speedup is not claimed because cloud runtime conditions varied.
+
+## From fundamentals to research
+
+The study archive follows the data flow of a segmentation system, from Tensor
+contracts to physical-space evaluation and nnU-Net's training pipeline.
+
+| Part | Focus | Notebooks |
+| :--- | :--- | ---: |
+| [1 · Segmentation fundamentals](studies/prerequisites/part01_segmentation_fundamentals) | Tensor contracts, softmax, cross-entropy, Dice / IoU | 3 |
+| [2 · U-Net from scratch](studies/prerequisites/part02_unet_from_scratch) | Convolution, skip connections, tiny overfit | 3 |
+| [3 · Volumetric learning](studies/prerequisites/part03_volumetric_learning) | Conv3D memory, patch sampling, sliding-window inference | 3 |
+| [4 · Medical-image geometry](studies/prerequisites/part04_medical_image_geometry_ct) | NIfTI, affine, orientation, resampling, CT windowing | 4 |
+| [5 · Losses & evaluation](studies/prerequisites/part05_losses_physical_space_evaluation) | Soft Dice, surface metrics, empty masks, case aggregation | 3 |
+| [6 · nnU-Net literacy](studies/prerequisites/part06_nnunet_v2_literacy) | Fingerprints, planning, oversampling, deep supervision | 3 |
+| [7 · Research hygiene](studies/prerequisites/part07_research_hygiene_statistics) | Splits, leakage, reproducibility | 1 |
+
+[Open the full study index →](studies/prerequisites/README.md)
+The notebooks are educational implementations, not the OLES3D experiment runners.
+
+## Manuscript & repository scope
+
+**Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with
+Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
+
+*3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
+
+[Read the manuscript (PDF)](<paper/2026_KIIT_추계(대학생)_박용민_논문.hwp.pdf>)
+— prepared for KIIT 2026 Fall. This repository labels it as a manuscript;
+acceptance, publication, or an award is not asserted here.
 
 ```text
 oles3d/
-├─ AGENTS.md                    행동 규칙
-├─ README.md                    프로젝트 입구
-├─ research/
-│  ├─ README.md                 연구 운영·재현 명령의 기준 문서
-│  ├─ data_audit/               재사용 가능한 감사 도구
-│  └─ data_foundation/          단계별 실습 스크립트
-├─ studies/prerequisites/       20개 학습 notebook
-├─ data/                       원본 데이터 (Git 제외)
-├─ artifacts/                  실행 결과 (Git 제외)
-└─ .venv/                      현재 로컬 환경 (Git 제외)
+├── README.md                Research overview
+├── paper/                   Manuscript, method figures, result tables
+│   └── assets/              Evidence plot, aggregate CSVs, source hashes
+└── studies/prerequisites/   20 educational notebooks and study index
 ```
 
-`docs/`, `protocol/`은 현재 내용 없는 로컬 디렉터리다. 연구 코드는 필요한
-단계에서 추가하며 빈 디렉터리를 연구 구현 완료로 간주하지 않는다.
+**Published code is limited to `studies/`.** Training/evaluation implementation,
+infrastructure scripts, raw CT/masks, checkpoints, and internal reports are not
+included in the current public tree. This is a research portfolio and study archive,
+not a complete experiment-reproduction release. No clinical-use claim is made.
 
-## 실행 환경과 데이터
-
-모든 CLI는 프로젝트 루트에서 실행한다. 현재 로컬 interpreter는
-`/home/anna/projects/oles3d/.venv/bin/python`이며 notebook은
-`.venv (3.12.3)` / kernelspec `python3`를 사용한다.
-
-```bash
-cd /home/anna/projects/oles3d
-.venv/bin/python -m pip check
-```
-
-`pip check`는 현재 설치된 패키지 간 dependency 검사다. 새 컴퓨터의 환경을
-재현하는 설치 명령이 아니다. Dependency manifest와 research 환경 동결은
-[수정 대기 항목](research/README.md#repair-backlog)에 명시했다.
-
-원본 CT·mask·환자 metadata·checkpoint·credential은 Git에 올리지 않는다.
-공개 비식별 데이터를 이용하는 교육·연구용 prototype이며 임상 진단·치료
-성능이나 medical device 사용을 주장하지 않는다.
+The work builds on [TotalSegmentator](https://github.com/wasserth/TotalSegmentator)
+and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).
+The dataset release is [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
+(CC BY 4.0); the displayed medical-image figures are derived from that dataset.
+Full references appear in the manuscript.

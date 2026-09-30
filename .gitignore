@@ -1,50 +1,37 @@
-# Python
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.cache/
-.coverage
-htmlcov/
+# Public portfolio allowlist. All other local research files remain private.
+/*
+!/.gitattributes
+!/.gitignore
+!/README.md
 
-# Jupyter and editors
-.ipynb_checkpoints/
-.vscode/
-.idea/
+# Public code: educational notebooks only, with their study documentation.
+!/studies/
+/studies/**
+!/studies/**/
+!/studies/**/*.ipynb
+!/studies/**/*.md
 
-# Secrets and local configuration
-.env
-.env.*
-!.env.example
+# Manuscript and user-supplied publication figures (not the editable HWP source).
+!/paper/
+/paper/**
+!/paper/2026_KIIT_추계(대학생)_박용민_논문.hwp.pdf
+!/paper/3D_topology_probability_editable.jpg
+!/paper/Figure2(1).jpg
+!/paper/RESULTS.md
+!/paper/assets/
+!/paper/assets/evidence_overview.png
+!/paper/assets/evidence_overview.svg
+!/paper/assets/discovery.csv
+!/paper/assets/replication.csv
+!/paper/assets/exploratory_test.csv
+!/paper/assets/surface_checks.csv
+!/paper/assets/sources.json
 
-# Medical images and datasets: never commit patient-level data
-data/
-*.nii
-*.nii.gz
-*.dcm
-*.nrrd
-*.mha
-*.mhd
-*.zip
-
-# Model artifacts and experiment outputs
-artifacts/
-outputs/
-runs/
-wandb/
-mlruns/
-*.ckpt
-*.pth
-*.pt
-*.onnx
-
-# nnU-Net runtime directories
-nnUNet_raw/
-nnUNet_preprocessed/
-nnUNet_results/
-
-# OS noise
-.DS_Store
-Thumbs.db
+# Always exclude generated notebook copies, environments, caches and credentials.
+**/.ipynb_checkpoints/
+**/__pycache__/
+**/.venv/
+**/.env
+**/.env.*
+**/.vscode/
+**/.DS_Store

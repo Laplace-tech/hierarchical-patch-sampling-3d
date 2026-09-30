@@ -1,7 +1,0 @@
-# OLES3D research runtime: direct version constraints
-# torch 2.13.0+cu130 is the installed wheel; the public requirement omits
-# the local CUDA build suffix so pip can reproduce the compatible release.
-torch==2.13.0
-torchvision==0.28.0
-nnunetv2==2.8.1
-surface-distance==0.1

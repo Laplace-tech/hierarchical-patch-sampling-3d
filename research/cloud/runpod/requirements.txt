@@ -1,6 +1,0 @@
-# OLES3D RunPod direct runtime constraints
-# Base image provides CUDA-enabled torch/torchvision; nnU-Net is added in the
-# persistent project venv without replacing those packages.
-torch==2.8.0
-torchvision==0.23.0
-nnunetv2==2.8.1

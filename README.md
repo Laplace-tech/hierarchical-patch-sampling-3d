@@ -1,28 +1,17 @@
-# Hierarchical Conditional Patch Sampling
+# Hierarchical Conditional-Probability-Based Adaptive Patch Sampling
 
-*Organ- and error-type-aware adaptive sampling for 3D abdominal CT segmentation.*
+*Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation*
 
-This study investigates patch selection for **3D abdominal CT
-multi-organ segmentation**. Organ-wise learning states and error types guide
-sampling while the nnU-Net architecture stays unchanged.
+## Overview
 
-## Research question
-
-**Can a hierarchy of organ- and error-conditioned sampling decisions improve
-segmentation at a fixed update budget?**
+Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided by organ-wise learning states and prediction error types. The nnU-Net architecture remains unchanged.
 
 ## Method
 
-![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
-
-The guided branch uses **hierarchical conditional probabilities**: select an organ
-$k$, an error type $r$ within that organ, and a candidate center $c$ within that pool.
+The guided sampling branch follows a **hierarchical conditional-probability structure**: select an organ $k$, an error type $r$ conditioned on that organ, and a patch center $c$ from the corresponding candidate pool.
 
 $$
-p_t(k,r,c)=
-\underbrace{p_t(k)}_{\text{organ}}
-\underbrace{p_t(r\mid k)}_{\text{error type}}
-\underbrace{p_t(c\mid k,r)}_{\text{patch center}}.
+p_t(k,r,c) = p_t(k)\,p_t(r \mid k)\,p_t(c \mid k,r)
 $$
 
 Organ selection uses a smoothed Dice deficit; error-type selection combines current
@@ -30,7 +19,7 @@ candidate counts with historical error shares. A 3D patch is cropped around the
 selected center. These probabilities describe the guided branch, not every patch.
 
 <details>
-<summary>🧮 Sampling equations · learning states and conditional distributions</summary>
+<summary>🔢 (Click) Sampling equations · learning states and conditional distributions</summary>
 
 For the current training case, $K_t$ contains organs with candidates,
 $R_t(k)$ contains their non-empty error types, and $C_t(k,r)$ is a candidate pool.
@@ -246,26 +235,22 @@ Candidate snapshots may combine observations from different refresh times.
 
 </details>
 
-## Manuscript & conference
+## Conference & Academic Output
 
-**Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with
-Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
+**Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
 
 *3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
 [Read the manuscript (PDF)](paper/manuscript_kiit_2026.pdf)
 
-Prepared for the **KIIT 2026 Fall Conference — Undergraduate Paper Competition**
-(2026 한국정보기술학회 추계종합학술대회 및 대학생논문경진대회).
-
 | Item | Details |
-| :--- | :--- |
-| Organizer | Korean Institute of Information Technology (한국정보기술학회) |
-| Conference | November 26–28, 2026 · Maison Glad Jeju, South Korea |
-| Track | Undergraduate paper competition |
-| Current status | Preparing to participate; conference has not yet taken place as of September 30, 2026 |
+| --- | --- |
+| Conference | 2026 한국정보기술학회 추계종합학술대회 · 대학생논문경진대회 |
+| Research Area | Deep Learning · Medical AI · Medical Image Segmentation |
+| Author | 박용민 (**First Author**) |
+| Email | add28482848@kyonggi.ac.kr |
+| Affiliation | 경기대학교 AI컴퓨터공학부 |
 
-Presentation slides and any award documentation will be added when available.
 
 ## Repository scope
 
@@ -278,12 +263,6 @@ hierarchical-patch-sampling-3d/
 │   └── results/             Aggregate CSVs, sampling probabilities, source hashes
 └── studies/prerequisites/   20 educational notebooks
 ```
-
-**Published code is limited to `studies/`.** These notebooks are
-educational examples, not the experiment runners. Training/evaluation implementation,
-infrastructure scripts, raw CT/masks, checkpoints, and internal reports are not
-included in the current public tree. This is not a complete experiment-reproduction
-release. No clinical-use claim is made.
 
 The work uses [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
 (CC BY 4.0) and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).

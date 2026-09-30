@@ -1,8 +1,6 @@
-# Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation
+# Hierarchical Conditional Patch Sampling
 
-*3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
-
-[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Conference](#conference)
+*Organ- and error-type-aware adaptive sampling for 3D abdominal CT segmentation.*
 
 This study investigates patch selection for **3D abdominal CT
 multi-organ segmentation**. Organ-wise learning states and error types guide
@@ -32,7 +30,7 @@ candidate counts with historical error shares. A 3D patch is cropped around the
 selected center. These probabilities describe the guided branch, not every patch.
 
 <details>
-<summary>Sampling equations · learning states and conditional distributions</summary>
+<summary>🧮 Sampling equations · learning states and conditional distributions</summary>
 
 For the current training case, $K_t$ contains organs with candidates,
 $R_t(k)$ contains their non-empty error types, and $C_t(k,r)$ is a candidate pool.
@@ -91,7 +89,6 @@ is illustrative, not a recorded training draw; surface smoothing is for display.
 The saved state links eight eligible organs to their error-type distributions and
 an illustrative pancreas-centered crop; the gallbladder pool is empty in this snapshot.
 These are sampling probabilities, not prediction confidence.
-[Editable SVG](paper/figures/fig04_conditional_probability_hierarchy.svg) · [Source values](paper/results/figure04_probability_snapshot.json)
 
 ## Experimental setup
 
@@ -153,8 +150,6 @@ Seed **55254**, **28 validation cases**.
 | P | **0.796770** | **0.908046** | 0.923413 |
 | P − B0 | **+5.1228 pp** | **+0.9603 pp** | −0.0139 pp |
 
-[Download the discovery table](paper/results/table01_discovery.csv).
-
 The early P–B0 difference narrowed at 20K and was nearly absent at 30K.
 
 ### Replication: the improvement was not consistent
@@ -176,9 +171,6 @@ was **not met**.
 **The experiments do not establish consistent early-learning or final-performance
 superiority.** Wall-clock speedup is not claimed because cloud runtime conditions varied.
 
-[Replication CSV](paper/results/table02_replication.csv) · [Surface metrics CSV](paper/results/table04_surface_metrics.csv) · [Exploratory test CSV](paper/results/table03_exploratory_test.csv)
-
-<a id="detailed-results"></a>
 <details>
 <summary>Evaluation details, surface metrics and exploratory test</summary>
 
@@ -207,8 +199,6 @@ lower confidence bound. The paired seed × case percentile bootstrap used 100,00
 resamples. Three seeds still give limited seed-level precision; resampling cases
 does not create additional training runs.
 
-[All six checkpoints and per-seed differences (CSV)](paper/results/table02_replication.csv).
-
 ### Surface checks at 30K
 
 Discovery seed 55254; 28 validation cases; technical NSD tolerance 3 mm.
@@ -227,8 +217,6 @@ Missing entries and different availability therefore matter: subtraction of thes
 displayed means is **not** the paired common-nonempty-organ contrast.
 The audit does not support a final surface-quality superiority claim.
 
-[Unrounded surface summaries (CSV)](paper/results/table04_surface_metrics.csv).
-
 ### Held-out test: explicitly exploratory
 
 49 held-out cases, evaluated **after** the failed validation primary using the
@@ -243,7 +231,6 @@ result from replacing the failed confirmatory check.
 
 The intervals describe variability within this two-seed, 49-case evaluation;
 they do not account for the preceding seed-selection decision.
-[Unrounded test summaries (CSV)](paper/results/table03_exploratory_test.csv).
 
 ### Evidence and release scope
 
@@ -251,17 +238,20 @@ The manuscript focuses on the discovery comparison; this repository also include
 replication and exploratory-test evidence. Neither clinical benefit nor formal
 equivalence is established.
 
-The [source manifest](paper/results/source_manifest.json) records source-artifact
-names and SHA-256 hashes for the aggregate numbers, not a full reproduction package.
+The source manifest records source-artifact names and SHA-256 hashes for the
+aggregate numbers, not a full reproduction package.
 
-The results graph is available as an [editable SVG](paper/figures/fig03_learning_dynamics.svg).
 The supplied CT/3D figures derive from TotalSegmentator, not generative images.
 Candidate snapshots may combine observations from different refresh times.
 
 </details>
 
-<a id="conference"></a>
 ## Manuscript & conference
+
+**Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with
+Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
+
+*3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
 [Read the manuscript (PDF)](paper/manuscript_kiit_2026.pdf)
 
@@ -275,7 +265,6 @@ Prepared for the **KIIT 2026 Fall Conference — Undergraduate Paper Competition
 | Track | Undergraduate paper competition |
 | Current status | Preparing to participate; conference has not yet taken place as of September 30, 2026 |
 
-Dates and venue: [official conference website](https://ki-it.or.kr/conference/fallconf26).
 Presentation slides and any award documentation will be added when available.
 
 ## Repository scope
@@ -290,14 +279,12 @@ hierarchical-patch-sampling-3d/
 └── studies/prerequisites/   20 educational notebooks
 ```
 
-**Published code is limited to [study notebooks](studies/prerequisites).** These are
+**Published code is limited to `studies/`.** These notebooks are
 educational examples, not the experiment runners. Training/evaluation implementation,
 infrastructure scripts, raw CT/masks, checkpoints, and internal reports are not
 included in the current public tree. This is not a complete experiment-reproduction
 release. No clinical-use claim is made.
 
-The work builds on [TotalSegmentator](https://github.com/wasserth/TotalSegmentator)
-and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).
-The dataset release is [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
-(CC BY 4.0); the displayed medical-image figures are derived from that dataset.
-Full references appear in the manuscript.
+The work uses [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
+(CC BY 4.0) and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).
+Medical-image figures derive from that dataset; full references are in the manuscript.

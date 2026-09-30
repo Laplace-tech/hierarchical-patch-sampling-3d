@@ -1,0 +1,47 @@
+{
+  "metric": "case-first 9-organ macro Dice",
+  "difference_unit": "percentage points: 100 * (P - B0)",
+  "discovery_seed": 55254,
+  "replication_seeds": [
+    55255,
+    55256,
+    55257
+  ],
+  "exploratory_test_seeds": [
+    55254,
+    55255
+  ],
+  "bootstrap": {
+    "method": "paired two-way percentile bootstrap",
+    "axes": [
+      "training_seed",
+      "validation_case"
+    ],
+    "resamples": 100000,
+    "seed": 55254,
+    "limitation": "Only three replication seeds; seed-level uncertainty is imprecise"
+  },
+  "notes": [
+    "Source paths refer to local, unpublished experimental artifacts.",
+    "This is an aggregate documentation export, not a training-code release.",
+    "Test results use selected seeds after the failed validation primary and are exploratory.",
+    "HD95 summaries exclude undefined empty-prediction entries; see RESULTS.md."
+  ],
+  "sources_sha256": {
+    "artifacts/nnunet/4_5a_b0_main_seed55254_10k_validation.json": "d69ef8f8667804c49b06359d3bb8597cf3b493edea7e435261455e4d38665719",
+    "artifacts/nnunet/4_5b_b0_main_seed55254_20k_validation.json": "53c65d4148653acdea972c61c5d27b04f6a717d693f1c05af2d1977cb7aab03e",
+    "artifacts/nnunet/2_6g_b0_main_seed55254_30k_validation.json": "dd8c7ff16349518992d0985680e89ddc2d2a23dc73ab297ca0e38855b9b3a6d5",
+    "artifacts/nnunet/4_5a_b1_main_seed55254_10k_validation.json": "d3531149e7ead49100176f37f3f591bb955fffdcb0e78663f735734e5c120441",
+    "artifacts/nnunet/4_5b_b1_main_seed55254_20k_validation.json": "243f3910bdeb8f544e302ddeaab3d4028f14f7da8013e4b5ca896a0f6c032717",
+    "artifacts/nnunet/4_1b_b1_main_seed55254_30k_validation.json": "4c77b1fdcffa862940688733135aeafa9171bf6ef2168f0a13d6ffb99cd03729",
+    "artifacts/nnunet/4_5a_a1_main_seed55254_10k_validation.json": "5885ade3a8110deb396e6e938c3ac068e7706ea70486d38cfd2587e4743003d7",
+    "artifacts/nnunet/4_5b_a1_main_seed55254_20k_validation.json": "e72aa6efa3f4e30193f97521d98dcba8c939d67e53ee3f13c2046768f52c4ccc",
+    "artifacts/nnunet/4_2b_a1_main_seed55254_30k_validation.json": "3e7dd0cc5e108f36e23a66211e9f771fb8efbccc8d589aefcdc977c4063011a3",
+    "artifacts/nnunet/4_5a_p_main_seed55254_10k_validation.json": "a829e436af9cb907909c0879a65aa0e5595f47253443bc423218f073473562bc",
+    "artifacts/nnunet/4_5b_p_main_seed55254_20k_validation.json": "fc61684d8e58fe2d8a08df24c0e19a892bc6fb1eacedfa0c8967ae333b32854d",
+    "artifacts/nnunet/4_3b_p_main_seed55254_30k_validation.json": "a1ca9f426034e20a12a6e68ae5ca235579e401781cf121d2eb22010cd38b5b95",
+    "artifacts/nnunet/stage_b/5_5_stage_b_b0_p_replication.json": "88b5e94d7ff77709b0cdce895450c1e4de196a1de8a43822f29c4fb581477ac5",
+    "artifacts/nnunet/test/6_2_held_out_test_summary.json": "21f786a76989ee2aa812e9d03f4adcb950c97c3d6aa1284b8edc8888ded353d0",
+    "artifacts/nnunet/4_4_stage_a_seed55254_30k_surface_metrics.json": "4c4bf970228ce60b39a4c4dcfc75a3c033a6881f0bcf0dcf953de0b1210a371c"
+  }
+}

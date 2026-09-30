@@ -8,6 +8,8 @@ Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided
 
 ## Method
 
+![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
+
 The guided sampling branch follows a **hierarchical conditional-probability structure**: select an organ $k$, an error type $r$ conditioned on that organ, and a patch center $c$ from the corresponding candidate pool.
 
 $$

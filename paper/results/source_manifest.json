@@ -25,7 +25,7 @@
     "Source paths refer to local, unpublished experimental artifacts.",
     "This is an aggregate documentation export, not a training-code release.",
     "Test results use selected seeds after the failed validation primary and are exploratory.",
-    "HD95 summaries exclude undefined empty-prediction entries; see RESULTS.md."
+    "HD95 summaries exclude undefined empty-prediction entries; see the root README."
   ],
   "sources_sha256": {
     "artifacts/nnunet/4_5a_b0_main_seed55254_10k_validation.json": "d69ef8f8667804c49b06359d3bb8597cf3b493edea7e435261455e4d38665719",

@@ -126,6 +126,9 @@ distinct from the observer-patch Dice used for sampling.
 training seeds; the mean error bar is a paired seed × case bootstrap 95% interval.
 All evaluations use the same 28 validation cases.*
 
+<details>
+<summary>Detailed results · Discovery and replication</summary>
+
 ### Discovery: early improvement in one seed
 
 Seed **55254**, **28 validation cases**.
@@ -155,6 +158,8 @@ seeds, using the same 28 validation cases.
 The mean difference had a paired seed × case bootstrap 95% interval of
 **[−3.8562, +4.2047] pp**. Only one seed was positive: the confirmatory criterion
 was **not met**.
+
+</details>
 
 ## Conference & Academic Output
 

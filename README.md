@@ -2,26 +2,16 @@
 
 **Organ-wise learning states and semantic error types for adaptive multi-organ segmentation.**
 
-[Manuscript](paper/manuscript_kiit_2026.pdf) · [Results](#results-discovery-and-replication) · [Study notebooks](#study-notebooks)
+[Paper](paper/manuscript_kiit_2026.pdf) · [Method](#method) · [Experiments](#experimental-setup) · [Results](#results) · [Study notebooks](#study-notebooks)
 
 Yongmin Park (박용민) · Computer Science, Kyonggi University · [Laplace-tech](https://github.com/Laplace-tech)
 
-![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
+This sole-author undergraduate project investigates **which patches a model should
+learn from during 3D abdominal CT segmentation**. It keeps the nnU-Net architecture
+and adapts patch selection using organ-level learning states and prediction errors.
 
-This project studies **adaptive patch selection for 3D abdominal CT multi-organ segmentation**.
-The experimental implementation and saved runs retain the internal name `OLES3D`.
-Instead of adding a new backbone, it keeps nnU-Net's segmentation architecture and
-changes which training patches the model sees: first select an organ using its
-learning state, then an error type, then a candidate patch center.
-
-This sole-author undergraduate project connects medical-image geometry, dataset
-auditing, sampler implementation, controlled experiments, and scientific writing.
-The public repository presents the manuscript, research figures, aggregate results,
-and the scratch notebooks used to build the foundations.
-
-| Data | Task | Comparison | Learning record |
-| :--- | :--- | :--- | :--- |
-| 602 eligible CT volumes | 9 abdominal organs | B0 / B1 / A1 / P | 20 study notebooks |
+The repository contains the manuscript, figures, experimental summaries, and
+20 foundational study notebooks. Saved experiments retain the name `OLES3D`.
 
 ## Research question
 
@@ -30,24 +20,25 @@ and the scratch notebooks used to build the foundations.
 Patch-based training cannot show every part of a 3D CT at every update.
 Uniform or foreground-centered sampling does not explicitly distinguish an organ
 that is still being missed from a boundary error or a false-positive region.
-OLES3D uses those distinctions to allocate patch-sampling probability.
+The proposed sampler uses those distinctions to allocate patch-sampling probability.
 
-```text
-Training-only observations
-          │
-          ▼
-Organ learning state ──► organ k ──► error type r ──► center c ──► 3D patch
-                        p(k)         p(r | k)        p(c | k, r)
-```
+## Method
+
+![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
+
+The guided sampling branch makes three choices:
+
+1. **Select an organ** using its smoothed Dice deficit.
+2. **Select an error type** using the organ's candidate pools and error-type state.
+3. **Select a candidate center** and extract the 3D training patch.
 
 The guided branch factorizes selection as
 
 $$p_t(k,r,c)=p_t(k)\,p_t(r\mid k)\,p_t(c\mid k,r).$$
 
-Organ-wise Dice deficits and observed error-type shares are smoothed over time.
-Mixtures of reference and adaptive distributions limit excessive concentration.
-Candidate coordinates are sampled within the selected pool. The diagram describes
-the guided selection mechanism, not a replacement for the complete nnU-Net pipeline.
+Learning states are smoothed over time, and reference/adaptive mixtures limit
+concentration on a few candidates. Only the guided sampling branch is described
+here; the rest of the nnU-Net pipeline is retained.
 
 | Candidate type | What the model is getting wrong | What the patch targets |
 | :--- | :--- | :--- |
@@ -57,12 +48,12 @@ the guided selection mechanism, not a replacement for the complete nnU-Net pipel
 
 ![3D pancreas surface, error candidates, and conditional error-type probabilities](paper/figures/fig02_error_candidate_topology.png)
 
-*Method illustration from training case `s0004`, pancreas, P / seed 55254 / 10K
-updates. Markers show bounded error-candidate reservoirs around the reference
-surface, not every erroneous voxel. The highlighted center illustrates patch
-selection; it is not a recorded optimizer sample. Surface smoothing is for display.*
+*Training case `s0004` · pancreas · P / seed 55254 / 10K updates.*
+Markers are bounded candidate reservoirs, not all erroneous voxels. The highlighted
+center is illustrative rather than a recorded training draw; the surface is smoothed
+for display.
 
-## Controlled experiment
+## Experimental setup
 
 | Setting | Configuration |
 | :--- | :--- |
@@ -88,7 +79,7 @@ budget matched while varying sampling. B1/A1/P share the online candidate mechan
 | **A1** · organ-adaptive allocation | ✓ | ✓ | — |
 | **P** · OLES3D | ✓ | ✓ | ✓ |
 
-## Results: discovery and replication
+## Results
 
 ![Discovery learning curves and independent-seed replication of the 10K P-minus-B0 difference](paper/figures/fig03_learning_dynamics.png)
 
@@ -96,8 +87,10 @@ budget matched while varying sampling. B1/A1/P share the online candidate mechan
 training seeds; the mean error bar is a paired seed × case bootstrap 95% interval.
 All evaluations use the same 28 validation cases.*
 
-**Discovery — seed 55254, 28 validation cases.** All entries below use full-volume
-inference, not training-time patch pseudo Dice.
+### Discovery: early improvement in one seed
+
+Seed **55254**, **28 validation cases**. All entries use full-volume inference,
+not training-time patch pseudo Dice.
 
 | Policy | 10K Dice | 20K Dice | 30K Dice |
 | :--- | ---: | ---: | ---: |
@@ -109,21 +102,30 @@ inference, not training-time patch pseudo Dice.
 
 [Download the discovery table](paper/results/table01_discovery.csv).
 
-The discovery run showed an early advantage that largely disappeared by 30K.
-That observation motivated an independent-seed check; it is not, by itself,
-evidence of a reliable speedup or final-performance improvement.
+P led B0 by **5.12 percentage points at 10K** in the discovery run. The difference
+was much smaller at 20K and nearly absent at 30K.
 
-**Replication — seeds 55255 / 55256 / 55257, same 28 validation cases.**
-At the preselected 10K endpoint, P − B0 was **+4.3806 / −1.4315 / −3.8317 pp**.
-The mean was **−0.2942 pp**, with a paired seed × case bootstrap 95% interval of
-**[−3.8562, +4.2047] pp**. Only one of three seeds was positive, so the
-confirmatory success criterion was **not met**.
+### Replication: the improvement was not consistent
 
-The research establishes an implemented and evaluated hierarchical sampling design,
-but **does not establish consistent early-learning superiority**. Final Dice,
-surface-distance checks, and exploratory held-out results are documented in
-[the result tables](#detailed-results), including their limitations.
-Wall-clock speedup is not claimed because cloud runtime conditions varied.
+The primary check compared P and B0 at **10K updates** in three independent training
+seeds, using the same 28 validation cases.
+
+| Seed | P − B0 Dice (pp) |
+| :--- | ---: |
+| 55255 | +4.3806 |
+| 55256 | −1.4315 |
+| 55257 | −3.8317 |
+| **Mean** | **−0.2942** |
+
+The mean difference had a paired seed × case bootstrap 95% interval of
+**[−3.8562, +4.2047] pp**. Only one seed was positive: the confirmatory criterion
+was **not met**.
+
+**Conclusion:** the hierarchical sampler was implemented and evaluated, but the
+experiments do not establish consistent early-learning or final-performance
+superiority. Wall-clock speedup is not claimed because cloud runtime conditions varied.
+
+[Replication CSV](paper/results/table02_replication.csv) · [Surface metrics CSV](paper/results/table04_surface_metrics.csv) · [Exploratory test CSV](paper/results/table03_exploratory_test.csv)
 
 <a id="detailed-results"></a>
 <details>
@@ -285,6 +287,10 @@ contracts to physical-space evaluation and nnU-Net's training pipeline.
 </details>
 
 The notebooks are educational implementations, not the experiment runners.
+
+<details>
+<summary>Running the notebooks and reading their execution record</summary>
+
 Open a notebook, install its imports in your own Python environment, and run cells
 from top to bottom. CUDA-memory exercises require a CUDA-capable GPU. Saved kernel
 names describe the original workstation and may need to be reselected elsewhere.
@@ -293,6 +299,8 @@ The archive contains 111 non-empty code cells. A static check found no syntax er
 or saved exceptions; nine cells in Parts 1–3 have no execution count. This is not a
 claim that every notebook has been rerun or that educational examples validate
 performance on patient data.
+
+</details>
 
 ## Manuscript & repository scope
 

@@ -167,8 +167,6 @@ was **not met**.
 
 *3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
 
-[Read the manuscript (PDF)](paper/manuscript_kiit_2026.pdf)
-
 | Item | Details |
 | --- | --- |
 | Conference | 2026 한국정보기술학회 추계종합학술대회 · 대학생논문경진대회 |
@@ -184,7 +182,6 @@ was **not met**.
 hierarchical-patch-sampling-3d/
 ├── README.md                Method, experimental setup, results
 ├── paper/
-│   ├── manuscript_kiit_2026.pdf
 │   ├── figures/             fig01–fig04: method and experimental results
 │   └── results/             Aggregate CSVs, sampling probabilities, source hashes
 └── studies/prerequisites/   20 educational notebooks
@@ -192,4 +189,4 @@ hierarchical-patch-sampling-3d/
 
 The work uses [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
 (CC BY 4.0) and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).
-Medical-image figures derive from that dataset; full references are in the manuscript.
+Medical-image figures derive from that dataset.

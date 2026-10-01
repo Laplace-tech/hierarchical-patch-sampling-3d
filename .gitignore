@@ -10,10 +10,9 @@
 !/studies/**/
 !/studies/**/*.ipynb
 
-# Manuscript and user-supplied publication figures (not the editable HWP source).
+# Publication figures and aggregate results only. Manuscripts remain local.
 !/paper/
 /paper/**
-!/paper/manuscript_kiit_2026.pdf
 !/paper/figures/
 !/paper/figures/fig01_hierarchical_sampling.jpg
 !/paper/figures/fig02_error_candidate_topology.png

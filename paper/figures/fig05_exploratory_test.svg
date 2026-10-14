@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+<title id="title">Exploratory held-out test: B0 and P Dice at 10K and 30K updates</title>
+<desc id="desc">49 held-out cases, selected seeds 55254 and 55255. At 10K, B0 Dice 0.7053 and P Dice 0.7677, difference plus 6.2430 percentage points with 95% interval 4.4458 to 8.2161. At 30K, B0 Dice 0.9052 and P Dice 0.9067, difference plus 0.1541 points with interval minus 0.3884 to 0.6086. Exploratory comparison after a failed validation primary.</desc>
+<style>
+  text{font-family:Arial,Helvetica,sans-serif;fill:#14273d}
+  .title{font-size:27px;font-weight:700}.sub{font-size:16px;fill:#53647a}
+  .panel{fill:#fff;stroke:#d7e0e9;stroke-width:1.2}.head{font-size:19px;font-weight:700}
+  .note{font-size:13px;fill:#5b6a7f}.tick{font-size:13px;fill:#53647a}
+  .grid{stroke:#e6ebf1;stroke-width:1}.axis{stroke:#8897a9;stroke-width:1.2}
+  .zero{stroke:#64748b;stroke-width:1.5;stroke-dasharray:5 4}
+  .b0line{fill:none;stroke:#2563eb;stroke-width:3}.pline{fill:none;stroke:#d97706;stroke-width:3}
+  .b0{fill:#2563eb;stroke:white;stroke-width:2}.p{fill:#d97706;stroke:white;stroke-width:2}
+  .ci{stroke:#d97706;stroke-width:2.5}.value{font-size:15px;font-weight:700}
+  .foot{font-size:13px;fill:#44556a}
+</style>
+<rect width="1200" height="680" fill="#f5f7fa"/>
+<text x="60" y="60" class="title">Exploratory held-out test</text>
+<text x="60" y="88" class="sub">49 cases · selected seeds 55254 and 55255 · case-first 9-organ macro Dice</text>
+<rect x="55" y="120" width="620" height="465" rx="11" class="panel"/>
+<rect x="690" y="120" width="455" height="465" rx="11" class="panel"/>
+<text x="83" y="159" class="head">Segmentation Dice</text>
+<line x1="385" y1="153" x2="415" y2="153" class="b0line"/><text x="422" y="158" class="tick">B0</text>
+<line x1="485" y1="153" x2="515" y2="153" class="pline"/><text x="522" y="158" class="tick">P</text>
+<text x="715" y="159" class="head">P − B0 (percentage points)</text>
+<text x="715" y="182" class="note">Point estimate and reported 95% interval</text>
+<line x1="140" y1="500.0" x2="620" y2="500.0" class="grid"/><text x="126" y="505.0" text-anchor="end" class="tick">0.65</text>
+<line x1="140" y1="450.0" x2="620" y2="450.0" class="grid"/><text x="126" y="455.0" text-anchor="end" class="tick">0.70</text>
+<line x1="140" y1="400.0" x2="620" y2="400.0" class="grid"/><text x="126" y="405.0" text-anchor="end" class="tick">0.75</text>
+<line x1="140" y1="350.0" x2="620" y2="350.0" class="grid"/><text x="126" y="355.0" text-anchor="end" class="tick">0.80</text>
+<line x1="140" y1="300.0" x2="620" y2="300.0" class="grid"/><text x="126" y="305.0" text-anchor="end" class="tick">0.85</text>
+<line x1="140" y1="250.0" x2="620" y2="250.0" class="grid"/><text x="126" y="255.0" text-anchor="end" class="tick">0.90</text>
+<line x1="140" y1="200.0" x2="620" y2="200.0" class="grid"/><text x="126" y="205.0" text-anchor="end" class="tick">0.95</text>
+<line x1="745" y1="500.0" x2="1080" y2="500.0" class="grid"/><text x="733" y="505.0" text-anchor="end" class="tick">-1</text>
+<line x1="745" y1="470.0" x2="1080" y2="470.0" class="zero"/><text x="733" y="475.0" text-anchor="end" class="tick">0</text>
+<line x1="745" y1="410.0" x2="1080" y2="410.0" class="grid"/><text x="733" y="415.0" text-anchor="end" class="tick">+2</text>
+<line x1="745" y1="350.0" x2="1080" y2="350.0" class="grid"/><text x="733" y="355.0" text-anchor="end" class="tick">+4</text>
+<line x1="745" y1="290.0" x2="1080" y2="290.0" class="grid"/><text x="733" y="295.0" text-anchor="end" class="tick">+6</text>
+<line x1="745" y1="230.0" x2="1080" y2="230.0" class="grid"/><text x="733" y="235.0" text-anchor="end" class="tick">+8</text>
+<line x1="140" y1="500" x2="620" y2="500" class="axis"/>
+<line x1="140" y1="200" x2="140" y2="500" class="axis"/>
+<line x1="745" y1="500" x2="1080" y2="500" class="axis"/>
+<line x1="745" y1="200" x2="745" y2="500" class="axis"/>
+<path d="M 245 444.7 L 545 244.8" class="b0line"/>
+<path d="M 245 382.3 L 545 243.3" class="pline"/>
+<circle cx="245" cy="444.7" r="7" class="b0"/>
+<circle cx="545" cy="244.8" r="7" class="b0"/>
+<circle cx="245" cy="382.3" r="7" class="p"/>
+<circle cx="545" cy="243.3" r="7" class="p"/>
+<text x="245" y="365.3" text-anchor="middle" class="value" fill="#a35405">0.7677</text>
+<text x="245" y="473.7" text-anchor="middle" class="value" fill="#1d4ed8">0.7053</text>
+<text x="545" y="216.3" text-anchor="middle" class="value">B0 0.9052 · P 0.9067</text>
+<line x1="835" y1="223.5" x2="835" y2="336.6" class="ci"/><line x1="825" y1="223.5" x2="845" y2="223.5" class="ci"/><line x1="825" y1="336.6" x2="845" y2="336.6" class="ci"/><circle cx="835" cy="282.7" r="7" class="p"/>
+<line x1="1025" y1="451.7" x2="1025" y2="481.7" class="ci"/><line x1="1015" y1="451.7" x2="1035" y2="451.7" class="ci"/><line x1="1015" y1="481.7" x2="1035" y2="481.7" class="ci"/><circle cx="1025" cy="465.4" r="7" class="p"/>
+<text x="835" y="265.7" text-anchor="middle" class="value">+6.2430</text>
+<text x="1025" y="439.4" text-anchor="middle" class="value">+0.1541</text>
+<text x="245" y="532" text-anchor="middle" class="tick">10K</text>
+<text x="545" y="532" text-anchor="middle" class="tick">30K</text>
+<text x="835" y="532" text-anchor="middle" class="tick">10K</text>
+<text x="1025" y="532" text-anchor="middle" class="tick">30K</text>
+<text x="380" y="560" text-anchor="middle" class="note">Optimizer updates</text>
+<text x="910" y="560" text-anchor="middle" class="note">Optimizer updates · dashed line = no difference</text>
+<text x="60" y="620" class="foot">Exploratory result: two selected seeds were evaluated after the validation primary criterion was not met.</text>
+<text x="60" y="645" class="foot">Source: paper/results/table03_exploratory_test.csv · connecting lines link measured checkpoints only.</text>
+</svg>

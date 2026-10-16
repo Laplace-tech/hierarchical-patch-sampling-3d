@@ -20,7 +20,7 @@ Organ selection uses a smoothed Dice deficit; error-type selection combines curr
 candidate counts with historical error shares. A 3D patch is cropped around the
 selected center. These probabilities describe the guided branch, not every patch.
 
-### 🔢 Sampling equations
+### Sampling equations
 
 For the current training case, $K_t$ contains organs with candidates,
 $R_t(k)$ contains their non-empty error types, and $C_t(k,r)$ is a candidate pool.

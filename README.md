@@ -6,7 +6,25 @@
 
 Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided by organ-wise learning states and prediction error types. The nnU-Net architecture remains unchanged.
 
-## Method
+**Research question:** Can organ-aware and error-type-aware patch allocation improve segmentation learning at the same optimizer-update budget?
+
+**Observed result (single training run):** On 28 validation cases, the proposed policy (**P**) exceeded the nnU-Net baseline (**B0**) by **+5.1228 percentage points at 10K updates**, but the difference narrowed to **-0.0139 pp at 30K**. This is a descriptive observation, not evidence of consistent superiority.
+
+## Motivation & Research Objective
+
+3D full-resolution CT segmentation is commonly trained on smaller 3D patches because processing an entire volume at once is resource-intensive. nnU-Net's foreground oversampling increases the chance of including annotated structures, but it does not explicitly adapt patch allocation to **which organ is currently difficult** or **which prediction-error type remains for that organ**.
+
+This study asks whether adapting those sampling decisions can change segmentation performance **under a fixed number of optimizer updates**, while leaving the network architecture, preprocessing, loss, and augmentation unchanged. The objective is to evaluate a **sampling policy**, not propose a new segmentation network.
+
+## Main Contributions
+
+1. **Organ-aware allocation:** estimate an organ-specific learning state from observed Dice deficits and combine difficulty-weighted allocation with a uniform component.
+2. **Error-type-aware conditional allocation:** distinguish interior misses, boundary disagreements, and exterior false positives when selecting patch centers.
+3. **Controlled policy comparison:** compare baseline foreground oversampling (**B0**), static online candidates (**B1**), organ-adaptive selection (**A1**), and the full hierarchical policy (**P**) using matched training settings.
+
+The contribution is the **training-time allocation design and its evaluation**; the conditional-probability chain rule itself is not claimed as a novel mathematical result.
+
+## Proposed Method
 
 ![CT, organ selection, and three error-type candidate pools in hierarchical patch sampling](paper/figures/fig01_hierarchical_sampling.jpg)
 
@@ -118,14 +136,11 @@ $$
 Each case and organ has equal weight. These are full-volume evaluation scores,
 distinct from the observer-patch Dice used for sampling.
 
-## Results
+## Results & Discussion
 
-<details>
-<summary>Detailed results · Discovery</summary>
+**Single-run discovery comparison:** training seed **55254**, **28 validation cases**. Values are the case-first 9-organ macro Dice.
 
-### Discovery: early improvement in one seed
-
-Seed **55254**, **28 validation cases**.
+![Discovery-only validation learning dynamics for B0, B1, A1 and P at 10K, 20K and 30K updates](paper/figures/fig03_discovery_only.svg)
 
 | Policy | 10K Dice | 20K Dice | 30K Dice |
 | :--- | ---: | ---: | ---: |
@@ -133,13 +148,23 @@ Seed **55254**, **28 validation cases**.
 | B1 | 0.711985 | 0.896431 | 0.922776 |
 | A1 | 0.733086 | 0.897731 | 0.923548 |
 | P | **0.796770** | **0.908046** | 0.923413 |
-| P − B0 | **+5.1228 pp** | **+0.9603 pp** | −0.0139 pp |
+| **P − B0** | **+5.1228 pp** | **+0.9603 pp** | -0.0139 pp |
 
-The early P–B0 difference narrowed at 20K and was nearly absent at 30K.
+Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive P − B0 difference favors P; results are measured in percentage points (pp).
 
-</details>
+**Interpretation.** In this run, P had the highest 10K Dice, whereas B1 and A1 were below B0 at the same point. Thus, adding sampling components did **not** produce a monotonic improvement across the intermediate policies. The P − B0 advantage shrank at 20K and was essentially absent at 30K. These observations generate a hypothesis about early-stage allocation, but do not establish its mechanism or a generally superior policy.
 
-## Conference & Academic Output
+**Boundary-sensitive metrics at 30K.** In the same validation run, NSD@3 mm was **0.965922 (B0)** versus **0.964456 (P)**; mean reported HD95 was **4.667 mm (B0)** versus **6.121 mm (P)**. These summaries do not indicate a boundary-metric advantage for P. HD95 omits undefined empty-prediction measurements, so subtracting the displayed means is not a valid paired HD95 effect estimate. Source: [surface metrics CSV](paper/results/table04_surface_metrics.csv).
+
+## Limitations
+
+- **Evidence scope:** the displayed learning curves cover one training run and one 28-case validation split. They describe that run; they cannot establish a statistically reliable advantage across training conditions.
+- **Cohort selection:** only cases with all nine target masks non-empty were included. This restricts the evaluated population and does not guarantee complete anatomical coverage.
+- **Compute interpretation:** matching 30,000 optimizer updates does not demonstrate equal wall-clock time or GPU cost. The overhead of maintaining online candidate states is not quantified here.
+- **Method scope:** the probability equations govern the **guided sampling branch**, not every training patch. This README does not fully specify branch activation frequency or all candidate-generation thresholds.
+- **Available materials:** this repository publishes method descriptions, figures, and aggregate result files; it is not a release of the underlying nnU-Net trainer implementation.
+
+## Conference & Resources
 
 **Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
 
@@ -154,14 +179,14 @@ The early P–B0 difference narrowed at 20K and was nearly absent at 30K.
 | Affiliation | 경기대학교 AI컴퓨터공학부 |
 
 
-## Repository scope
+### Repository scope
 
 ```text
 hierarchical-patch-sampling-3d/
 ├── README.md                Method, experimental setup, results
 ├── paper/
-│   ├── figures/             fig01–fig04: method and experimental results
-│   └── results/             Aggregate CSVs, sampling probabilities
+│   ├── figures/             Method illustrations and result figures
+│   └── results/             Aggregate CSVs and sampling probabilities
 └── studies/prerequisites/   20 educational notebooks
 ```
 

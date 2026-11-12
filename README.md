@@ -2,6 +2,12 @@
 
 *Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation*
 
+**2026 KIIT Fall Conference · Undergraduate Paper Competition · Yongmin Park (Kyonggi University)**
+
+### Contents
+
+[Overview](#overview) · [Research Objective](#motivation--research-objective) · [Contributions](#main-contributions) · [Method](#proposed-method) · [Experimental Setup](#experimental-setup) · [Results](#results--discussion) · [Limitations](#limitations) · [Conference & Resources](#conference--resources)
+
 ## Overview
 
 Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided by organ-wise learning states and prediction error types. The nnU-Net architecture remains unchanged.
@@ -9,6 +15,18 @@ Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided
 **Research question:** Can organ-aware and error-type-aware patch allocation improve segmentation learning at the same optimizer-update budget?
 
 **Observed result (single training run):** On 28 validation cases, the proposed policy (**P**) exceeded the nnU-Net baseline (**B0**) by **+5.1228 percentage points at 10K updates**, but the difference narrowed to **-0.0139 pp at 30K**. This is a descriptive observation, not evidence of consistent superiority.
+
+### Study at a glance
+
+| Item | Summary |
+| :--- | :--- |
+| **Task** | 3D abdominal CT segmentation of **nine organs** |
+| **Dataset** | TotalSegmentator v2.0.1 · 602 eligible CT cases |
+| **Framework** | nnU-Net v2.8.1 · `3d_fullres` · unchanged network |
+| **Comparison** | B0 (baseline), B1 (error candidates), A1 (organ-adaptive), P (full hierarchy) |
+| **Metric** | Case-first nine-organ macro Dice |
+| **Main observation** | P − B0: **+5.1228 pp at 10K**, **−0.0139 pp at 30K** (one validation run) |
+
 
 ## Motivation & Research Objective
 
@@ -30,6 +48,8 @@ The contribution is the **training-time allocation design and its evaluation**; 
 
 The guided sampling branch follows a **hierarchical conditional-probability structure**: select an organ $k$, an error type $r$ conditioned on that organ, and a patch center $c$ from the corresponding candidate pool.
 
+The steps correspond to **(1) organ difficulty**, **(2) semantic prediction-error type**, and **(3) an eligible patch center**. The resulting distribution applies only to the *guided branch*, not all training patches.
+
 $$
 p_t(k,r,c) = p_t(k)\,p_t(r \mid k)\,p_t(c \mid k,r)
 $$
@@ -37,6 +57,9 @@ $$
 Organ selection uses a smoothed Dice deficit; error-type selection combines current
 candidate counts with historical error shares. A 3D patch is cropped around the
 selected center. These probabilities describe the guided branch, not every patch.
+
+<details>
+<summary><strong>Detailed sampling equations (EMA, conditional error allocation, center selection)</strong></summary>
 
 ### Sampling equations
 
@@ -76,11 +99,15 @@ unavailable error-state mass falls back to the candidate-count distribution.
 The hierarchy and mixtures follow the manuscript; the probability lower bound
 above is a direct consequence, not an additional method.
 
+</details>
+
 | Candidate type | What the model is getting wrong | What the patch targets |
 | :--- | :--- | :--- |
 | Interior miss | Missed voxels inside the reference organ, away from its boundary | Organ recognition |
 | Boundary disagreement | Prediction–label disagreement near the organ surface | Boundary delineation |
 | Exterior false positive | That organ predicted outside the reference boundary band | Confusion with surrounding tissue |
+
+### Error-type candidate visualization
 
 ![3D pancreas surface, error candidates, and conditional error-type probabilities](paper/figures/fig02_error_candidate_topology.png)
 
@@ -138,6 +165,9 @@ distinct from the observer-patch Dice used for sampling.
 
 ## Results & Discussion
 
+The learning-curve figure includes two views: **left, the B0/B1/A1/P discovery comparison**; **right, an independent-seed evaluation of the early difference**. The table directly below reports only the left-panel run. The full figure and the single-run table should not be treated as interchangeable evidence.
+
+
 **Single-run discovery comparison:** training seed **55254**, **28 validation cases**. Values are the case-first 9-organ macro Dice.
 
 ![Learning dynamics for four sampling policies and independent-seed comparison of P versus B0](paper/figures/fig03_learning_dynamics.png)
@@ -168,6 +198,9 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 
 ## Conference & Resources
 
+### Conference information
+
+
 **Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
 
 *3차원 복부 CT 다장기 분할을 위한 계층적 조건부 확률 기반의 장기별 학습 상태 및 오류 유형 적응형 패치 샘플링*
@@ -180,6 +213,17 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 | Email | add28482848@kyonggi.ac.kr |
 | Affiliation | 경기대학교 AI컴퓨터공학부 |
 
+
+### Research files
+
+| Resource | Contents |
+| :--- | :--- |
+| [Framework figure](paper/figures/fig01_hierarchical_sampling.jpg) | Full guided-sampling workflow |
+| [Error topology figure](paper/figures/fig02_error_candidate_topology.png) | Organ/error candidate locations and conditional weights |
+| [Conditional probability figure](paper/figures/fig04_conditional_probability_hierarchy.png) | Saved case-level probability snapshot |
+| [Learning dynamics figure](paper/figures/fig03_learning_dynamics.png) | Discovery curve and independent-seed comparison |
+| [Discovery Dice CSV](paper/results/table01_discovery.csv) | B0/B1/A1/P values at 10K, 20K and 30K |
+| [Surface metrics CSV](paper/results/table04_surface_metrics.csv) | 30K NSD@3 mm and HD95 summaries |
 
 ### Repository scope
 

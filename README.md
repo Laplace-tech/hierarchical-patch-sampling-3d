@@ -4,6 +4,8 @@
 
 **2026 KIIT Fall Conference · Undergraduate Paper Competition · Yongmin Park (Kyonggi University)**
 
+**Conference presentation:** [View the 8-slide PDF](paper/Hierarchical%20Conditional-Probability-Based%20Adaptive%20Patch%20Sampling.pdf)
+
 ### Contents
 
 [Overview](#overview) · [Research Objective](#motivation--research-objective) · [Contributions](#main-contributions) · [Method](#proposed-method) · [Experimental Setup](#experimental-setup) · [Results](#results--discussion) · [Limitations](#limitations) · [Conference & Resources](#conference--resources)
@@ -218,6 +220,7 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 
 | Resource | Contents |
 | :--- | :--- |
+| [Conference presentation (PDF)](paper/Hierarchical%20Conditional-Probability-Based%20Adaptive%20Patch%20Sampling.pdf) | Eight-slide KIIT 2026 research presentation |
 | [Framework figure](paper/figures/fig01_hierarchical_sampling.jpg) | Full guided-sampling workflow |
 | [Error topology figure](paper/figures/fig02_error_candidate_topology.png) | Organ/error candidate locations and conditional weights |
 | [Conditional probability figure](paper/figures/fig04_conditional_probability_hierarchy.png) | Saved case-level probability snapshot |
@@ -231,6 +234,7 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 hierarchical-patch-sampling-3d/
 ├── README.md                Method, experimental setup, results
 ├── paper/
+│   ├── Hierarchical Conditional-Probability-Based Adaptive Patch Sampling.pdf
 │   ├── figures/             Method illustrations and result figures
 │   └── results/             Aggregate CSVs and sampling probabilities
 └── studies/prerequisites/   20 educational notebooks

@@ -140,7 +140,9 @@ distinct from the observer-patch Dice used for sampling.
 
 **Single-run discovery comparison:** training seed **55254**, **28 validation cases**. Values are the case-first 9-organ macro Dice.
 
-![Discovery-only validation learning dynamics for B0, B1, A1 and P at 10K, 20K and 30K updates](paper/figures/fig03_discovery_only.svg)
+![Learning dynamics for four sampling policies and independent-seed comparison of P versus B0](paper/figures/fig03_learning_dynamics.png)
+
+*Figure: Left—B0/B1/A1/P learning curves from training seed 55254; right—10K P − B0 across independent training seeds, including a bootstrap uncertainty interval. The table below summarizes the left-panel discovery run only.*
 
 | Policy | 10K Dice | 20K Dice | 30K Dice |
 | :--- | ---: | ---: | ---: |

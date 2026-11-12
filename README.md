@@ -120,14 +120,8 @@ distinct from the observer-patch Dice used for sampling.
 
 ## Results
 
-![Discovery learning curves and independent-seed replication of the 10K P-minus-B0 difference](paper/figures/fig03_learning_dynamics.png)
-
-*Left: the four-policy discovery comparison. Right: 10K P − B0 in independent
-training seeds; the mean error bar is a paired seed × case bootstrap 95% interval.
-All evaluations use the same 28 validation cases.*
-
 <details>
-<summary>Detailed results · Discovery and replication</summary>
+<summary>Detailed results · Discovery</summary>
 
 ### Discovery: early improvement in one seed
 
@@ -142,22 +136,6 @@ Seed **55254**, **28 validation cases**.
 | P − B0 | **+5.1228 pp** | **+0.9603 pp** | −0.0139 pp |
 
 The early P–B0 difference narrowed at 20K and was nearly absent at 30K.
-
-### Replication: the improvement was not consistent
-
-The primary check compared P and B0 at **10K updates** in three independent training
-seeds, using the same 28 validation cases.
-
-| Seed | P − B0 Dice (pp) |
-| :--- | ---: |
-| 55255 | +4.3806 |
-| 55256 | −1.4315 |
-| 55257 | −3.8317 |
-| **Mean** | **−0.2942** |
-
-The mean difference had a paired seed × case bootstrap 95% interval of
-**[−3.8562, +4.2047] pp**. Only one seed was positive: the confirmatory criterion
-was **not met**.
 
 </details>
 
@@ -183,7 +161,7 @@ hierarchical-patch-sampling-3d/
 ├── README.md                Method, experimental setup, results
 ├── paper/
 │   ├── figures/             fig01–fig04: method and experimental results
-│   └── results/             Aggregate CSVs, sampling probabilities, source hashes
+│   └── results/             Aggregate CSVs, sampling probabilities
 └── studies/prerequisites/   20 educational notebooks
 ```
 

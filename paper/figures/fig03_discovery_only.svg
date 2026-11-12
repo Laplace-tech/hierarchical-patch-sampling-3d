@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 490" role="img" aria-label="Four-policy discovery validation macro Dice at 10K, 20K and 30K updates; P improves early in this run but converges at 30K.">
+<rect x="0" y="0" width="1040" height="490" fill="#FFFFFF"/>
+<text x="52" y="40" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700" fill="#111827">Validation learning dynamics — one training run</text>
+<g font-family="Arial, Helvetica, sans-serif"><g transform="translate(146 82)"><line x1="0" y1="0" x2="26" y2="0" stroke="#4B5563" stroke-width="4"/><text x="33" y="5" font-size="17" font-weight="600" fill="#374151">B0</text></g><g transform="translate(293 82)"><line x1="0" y1="0" x2="26" y2="0" stroke="#B45309" stroke-width="4"/><text x="33" y="5" font-size="17" font-weight="600" fill="#374151">B1</text></g><g transform="translate(440 82)"><line x1="0" y1="0" x2="26" y2="0" stroke="#596CB5" stroke-width="4"/><text x="33" y="5" font-size="17" font-weight="600" fill="#374151">A1</text></g><g transform="translate(587 82)"><line x1="0" y1="0" x2="26" y2="0" stroke="#0F766E" stroke-width="4"/><text x="33" y="5" font-size="17" font-weight="600" fill="#374151">P</text></g>
+<line x1="145" y1="113" x2="145" y2="403" stroke="#9CA3AF" stroke-width="1.5"/>
+<line x1="145" y1="403" x2="770" y2="403" stroke="#9CA3AF" stroke-width="1.5"/>
+<line x1="145" y1="381.5" x2="770" y2="381.5" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="386.5" text-anchor="end" font-size="16" fill="#4B5563">0.70</text>
+<line x1="145" y1="327.8" x2="770" y2="327.8" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="332.8" text-anchor="end" font-size="16" fill="#4B5563">0.75</text>
+<line x1="145" y1="274.1" x2="770" y2="274.1" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="279.1" text-anchor="end" font-size="16" fill="#4B5563">0.80</text>
+<line x1="145" y1="220.4" x2="770" y2="220.4" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="225.4" text-anchor="end" font-size="16" fill="#4B5563">0.85</text>
+<line x1="145" y1="166.7" x2="770" y2="166.7" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="171.7" text-anchor="end" font-size="16" fill="#4B5563">0.90</text>
+<line x1="145" y1="113.0" x2="770" y2="113.0" stroke="#E5E7EB" stroke-width="1"/>
+<text x="124" y="118.0" text-anchor="end" font-size="16" fill="#4B5563">0.95</text>
+<text x="156" y="433" text-anchor="middle" font-size="17" fill="#374151">10K</text>
+<text x="458" y="433" text-anchor="middle" font-size="17" fill="#374151">20K</text>
+<text x="760" y="433" text-anchor="middle" font-size="17" fill="#374151">30K</text>
+<polyline fill="none" stroke="#4B5563" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="156,332.6 458,168.4 760,141.4"/>
+<circle cx="156" cy="332.6" r="5" fill="#FFFFFF" stroke="#4B5563" stroke-width="3"/>
+<circle cx="458" cy="168.4" r="5" fill="#FFFFFF" stroke="#4B5563" stroke-width="3"/>
+<circle cx="760" cy="141.4" r="5" fill="#FFFFFF" stroke="#4B5563" stroke-width="3"/>
+<polyline fill="none" stroke="#B45309" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="156,368.6 458,170.5 760,142.2"/>
+<circle cx="156" cy="368.6" r="5" fill="#FFFFFF" stroke="#B45309" stroke-width="3"/>
+<circle cx="458" cy="170.5" r="5" fill="#FFFFFF" stroke="#B45309" stroke-width="3"/>
+<circle cx="760" cy="142.2" r="5" fill="#FFFFFF" stroke="#B45309" stroke-width="3"/>
+<polyline fill="none" stroke="#596CB5" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="156,346.0 458,169.1 760,141.4"/>
+<circle cx="156" cy="346.0" r="5" fill="#FFFFFF" stroke="#596CB5" stroke-width="3"/>
+<circle cx="458" cy="169.1" r="5" fill="#FFFFFF" stroke="#596CB5" stroke-width="3"/>
+<circle cx="760" cy="141.4" r="5" fill="#FFFFFF" stroke="#596CB5" stroke-width="3"/>
+<polyline fill="none" stroke="#0F766E" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" points="156,277.6 458,158.1 760,141.6"/>
+<circle cx="156" cy="277.6" r="6" fill="#FFFFFF" stroke="#0F766E" stroke-width="3"/>
+<circle cx="458" cy="158.1" r="6" fill="#FFFFFF" stroke="#0F766E" stroke-width="3"/>
+<circle cx="760" cy="141.6" r="6" fill="#FFFFFF" stroke="#0F766E" stroke-width="3"/>
+<text x="458" y="468" text-anchor="middle" font-size="17" fill="#374151">Optimizer updates</text>
+<text x="44" y="263" text-anchor="middle" transform="rotate(-90 44 263)" font-size="17" fill="#374151">Case-first macro Dice</text>
+<line x1="809" y1="132" x2="809" y2="365" stroke="#E5E7EB"/>
+<text x="833" y="153" font-weight="700" font-size="17" fill="#111827">P vs B0</text>
+<text x="833" y="192" font-size="16" fill="#4B5563">10K updates</text>
+<text x="833" y="225" font-size="27" font-weight="700" fill="#0F766E">+5.1228 pp</text>
+<text x="833" y="277" font-size="16" fill="#4B5563">30K updates</text>
+<text x="833" y="309" font-size="27" font-weight="700" fill="#374151">-0.0139 pp</text>
+<text x="833" y="345" font-size="14" fill="#6B7280">Seed 55254</text>
+<text x="833" y="363" font-size="14" fill="#6B7280">28 validation cases</text></g>
+</svg>

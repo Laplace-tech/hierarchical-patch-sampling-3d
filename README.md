@@ -2,14 +2,6 @@
 
 *Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation*
 
-**2026 KIIT Fall Conference · Undergraduate Paper Competition · Yongmin Park (Kyonggi University)**
-
-**Conference presentation:** [View the 8-slide PDF](paper/Hierarchical%20Conditional-Probability-Based%20Adaptive%20Patch%20Sampling.pdf)
-
-### Contents
-
-[Overview](#overview) · [Research Objective](#motivation--research-objective) · [Contributions](#main-contributions) · [Method](#proposed-method) · [Experimental Setup](#experimental-setup) · [Results](#results--discussion) · [Limitations](#limitations) · [Conference & Resources](#conference--resources)
-
 ## Overview
 
 Adaptive patch sampling for **3D abdominal CT multi-organ segmentation**, guided by organ-wise learning states and prediction error types. The nnU-Net architecture remains unchanged.
@@ -190,18 +182,9 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 
 **Boundary-sensitive metrics at 30K.** In the same validation run, NSD@3 mm was **0.965922 (B0)** versus **0.964456 (P)**; mean reported HD95 was **4.667 mm (B0)** versus **6.121 mm (P)**. These summaries do not indicate a boundary-metric advantage for P. HD95 omits undefined empty-prediction measurements, so subtracting the displayed means is not a valid paired HD95 effect estimate. Source: [surface metrics CSV](paper/results/table04_surface_metrics.csv).
 
-## Limitations
-
-- **Evidence scope:** the displayed learning curves cover one training run and one 28-case validation split. They describe that run; they cannot establish a statistically reliable advantage across training conditions.
-- **Cohort selection:** only cases with all nine target masks non-empty were included. This restricts the evaluated population and does not guarantee complete anatomical coverage.
-- **Compute interpretation:** matching 30,000 optimizer updates does not demonstrate equal wall-clock time or GPU cost. The overhead of maintaining online candidate states is not quantified here.
-- **Method scope:** the probability equations govern the **guided sampling branch**, not every training patch. This README does not fully specify branch activation frequency or all candidate-generation thresholds.
-- **Available materials:** this repository publishes method descriptions, figures, and aggregate result files; it is not a release of the underlying nnU-Net trainer implementation.
-
 ## Conference & Resources
 
 ### Conference information
-
 
 **Hierarchical Conditional-Probability-Based Adaptive Patch Sampling with Organ-Wise Learning States and Error Types for 3D Abdominal CT Multi-Organ Segmentation**
 
@@ -214,31 +197,6 @@ Source: [discovery results CSV](paper/results/table01_discovery.csv). A positive
 | Author | 박용민 (**Sole Author**) |
 | Email | add28482848@kyonggi.ac.kr |
 | Affiliation | 경기대학교 AI컴퓨터공학부 |
-
-
-### Research files
-
-| Resource | Contents |
-| :--- | :--- |
-| [Conference presentation (PDF)](paper/Hierarchical%20Conditional-Probability-Based%20Adaptive%20Patch%20Sampling.pdf) | Eight-slide KIIT 2026 research presentation |
-| [Framework figure](paper/figures/fig01_hierarchical_sampling.jpg) | Full guided-sampling workflow |
-| [Error topology figure](paper/figures/fig02_error_candidate_topology.png) | Organ/error candidate locations and conditional weights |
-| [Conditional probability figure](paper/figures/fig04_conditional_probability_hierarchy.png) | Saved case-level probability snapshot |
-| [Learning dynamics figure](paper/figures/fig03_learning_dynamics.png) | Discovery curve and independent-seed comparison |
-| [Discovery Dice CSV](paper/results/table01_discovery.csv) | B0/B1/A1/P values at 10K, 20K and 30K |
-| [Surface metrics CSV](paper/results/table04_surface_metrics.csv) | 30K NSD@3 mm and HD95 summaries |
-
-### Repository scope
-
-```text
-hierarchical-patch-sampling-3d/
-├── README.md                Method, experimental setup, results
-├── paper/
-│   ├── Hierarchical Conditional-Probability-Based Adaptive Patch Sampling.pdf
-│   ├── figures/             Method illustrations and result figures
-│   └── results/             Aggregate CSVs and sampling probabilities
-└── studies/prerequisites/   20 educational notebooks
-```
 
 The work uses [TotalSegmentator v2.0.1](https://doi.org/10.5281/zenodo.10047292)
 (CC BY 4.0) and [nnU-Net](https://github.com/MIC-DKFZ/nnUNet).
